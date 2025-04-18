@@ -10,6 +10,7 @@ namespace EternalPeace
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
