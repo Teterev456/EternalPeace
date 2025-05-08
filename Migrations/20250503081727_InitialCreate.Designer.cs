@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EternalPeace.Migrations
 {
     [DbContext(typeof(EternalPeaceDbContext))]
-    [Migration("20250502113947_InitialCreate")]
+    [Migration("20250503081727_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -71,10 +71,6 @@ namespace EternalPeace.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("DiseasesStatus")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("DoctorId")
                         .HasColumnType("integer");
 
@@ -83,6 +79,10 @@ namespace EternalPeace.Migrations
 
                     b.Property<DateOnly>("RecordDate")
                         .HasColumnType("date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("TreatmentCost")
                         .HasColumnType("integer");

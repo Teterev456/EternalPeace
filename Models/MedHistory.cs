@@ -14,7 +14,7 @@ namespace EternalPeace.Models
         public int Id { get; set; }
         public int PatientId { get; set; }
         public string Diseases { get; set; }
-        public string DiseasesStatus { get; set; }
+        public string Status { get; set; }
         public int DoctorId { get; set; }
         public int WardId { get; set; }
         public int TreatmentCost { get; set; }

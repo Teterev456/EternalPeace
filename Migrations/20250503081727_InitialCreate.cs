@@ -69,7 +69,7 @@ namespace EternalPeace.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PatientId = table.Column<int>(type: "integer", nullable: false),
                     Diseases = table.Column<string>(type: "text", nullable: false),
-                    DiseasesStatus = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     DoctorId = table.Column<int>(type: "integer", nullable: false),
                     WardId = table.Column<int>(type: "integer", nullable: false),
                     TreatmentCost = table.Column<int>(type: "integer", nullable: false),
