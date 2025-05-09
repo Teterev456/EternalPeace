@@ -10,6 +10,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Net;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Linq.Dynamic.Core;
+using System.Diagnostics;
+using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Numerics;
 
 class Program
 {
@@ -31,6 +37,7 @@ class Program
             Console.WriteLine("2 - Добавить строку");
             Console.WriteLine("3 - Удалить строку");
             Console.WriteLine("4 - Изменить строку");
+            Console.WriteLine("5 - SQL запрос");
             Console.WriteLine("6 - Выйти");
 
             Console.WriteLine("Введите номер команды: ");
@@ -46,7 +53,12 @@ class Program
                 }
                 else
                 {
-                    Console.WriteLine(Search(table_name));
+                    Console.WriteLine("1 - Вывод всей таблицы");
+                    Console.WriteLine("2 - Вывод с фильтрацией");
+
+                    Console.WriteLine("Введите номер команды:");
+                    string command_type = Console.ReadLine();
+                    Console.WriteLine(Search(table_name, command_type));
                 }
             }
 
@@ -89,6 +101,22 @@ class Program
                 else
                 {
                     Console.WriteLine(Update(table_name));
+                }
+            }
+
+            else if (command == "5")
+            {
+                Console.WriteLine("Введите название таблицы (с большой буквы): ");
+                table_name = Console.ReadLine();
+                Console.WriteLine("Введите SQL запрос (формат: SELECT * FROM \"Doctors\" WHERE sex = 'Женщина'): ");
+                string sql_query = Console.ReadLine();
+                if (sql_query == "")
+                {
+                    Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                }
+                else
+                {
+                    Console.WriteLine(Sql_Query(table_name, sql_query));
                 }
             }
 
@@ -201,7 +229,7 @@ class Program
                         {
                             Id = Id,
                             Name = str_Name,
-                            sex = str_Sex,
+                            Sex = str_Sex,
                             BirthDate = Birhdate,
                             Speciallity = str_Speciallity,
                             WorkExperience = WorkExperience
@@ -343,14 +371,14 @@ class Program
                     }
                 }
 
-                return $"{table}";
+                return "";
             }
         }
 
         return "Такой таблицы нет(";
     }
 
-    static string Search(string table)
+    static string Search(string table, string type)
     {
         var serviceProvider = new ServiceCollection()
             .AddDbContext<EternalPeaceDbContext>(options =>
@@ -365,41 +393,349 @@ class Program
         {
             if (entityType.GetTableName() == table)
             {
-                if (table == "Patients")
+                if (table == "Patients" && type == "1")
                 {
                     var patients = context.Patients.ToList();
                     foreach (var patient in patients)
                     {
                         Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
                     }
-                    return $"{table}";
+                    return "";
                 }
-                if (table == "Doctors")
+                else if (table == "Patients" && type == "2")
+                {
+                    var patients = context.Patients.ToList();
+
+                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
+                    string value = Console.ReadLine();
+
+                    if (value.Length > 5)
+                    {
+                        var conditionParts = new List<string>();
+                        var paramValues = new List<object>();
+
+                        var conditions = value.Split(',');
+
+                        foreach (var rawCondition in conditions)
+                        {
+                            string condition = rawCondition.Trim();
+
+                            int spaceCount = 0;
+                            string column_name = "";
+                            string sign = "";
+                            string column_value = "";
+
+                            for (int i = 0; i < condition.Length; i++)
+                            {
+                                char symb = condition[i];
+
+                                if (symb == ' ')
+                                {
+                                    spaceCount++;
+                                    continue;
+                                }
+
+                                if (spaceCount == 0)
+                                {
+                                    column_name += symb;
+                                }
+                                else if (spaceCount == 1)
+                                {
+                                    sign += symb;
+                                }
+                                else if (spaceCount >= 2)
+                                {
+                                    column_value += symb;
+                                }
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
+                            {
+                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
+                                paramValues.Add(column_value);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Ошибка разбора условия: {condition}");
+                                return "";
+                            }
+                        }
+
+                        string fullCondition = string.Join(" AND ", conditionParts);
+
+                        var result = context.Patients
+                            .Where(fullCondition, paramValues.ToArray())
+                            .ToList();
+
+                        foreach (var patient in result)
+                        {
+                            Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка ввода.");
+                    }
+
+                    return "";
+                }
+                if (table == "Doctors" && type == "1")
                 {
                     var doctors = context.Doctors.ToList();
                     foreach (var doctor in doctors)
                     {
-                        Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
+                        Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
                     }
-                    return $"{table}";
+                    return "";
                 }
-                if (table == "Wards")
+                else if (table == "Doctors" && type == "2")
+                {
+                    var patients = context.Doctors.ToList();
+
+                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
+                    string value = Console.ReadLine();
+
+                    if (value.Length > 5)
+                    {
+                        var conditionParts = new List<string>();
+                        var paramValues = new List<object>();
+
+                        var conditions = value.Split(',');
+
+                        foreach (var rawCondition in conditions)
+                        {
+                            string condition = rawCondition.Trim();
+
+                            int spaceCount = 0;
+                            string column_name = "";
+                            string sign = "";
+                            string column_value = "";
+
+                            for (int i = 0; i < condition.Length; i++)
+                            {
+                                char symb = condition[i];
+
+                                if (symb == ' ')
+                                {
+                                    spaceCount++;
+                                    continue;
+                                }
+
+                                if (spaceCount == 0)
+                                {
+                                    column_name += symb;
+                                }
+                                else if (spaceCount == 1)
+                                {
+                                    sign += symb;
+                                }
+                                else if (spaceCount >= 2)
+                                {
+                                    column_value += symb;
+                                }
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
+                            {
+                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
+                                paramValues.Add(column_value);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Ошибка разбора условия: {condition}");
+                                return "";
+                            }
+                        }
+
+                        string fullCondition = string.Join(" AND ", conditionParts);
+
+                        var result = context.Doctors
+                            .Where(fullCondition, paramValues.ToArray())
+                            .ToList();
+
+                        foreach (var doctor in result)
+                        {
+                            Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка ввода.");
+                    }
+
+                    return "";
+                }
+                if (table == "Wards" && type == "1")
                 {
                     var wards = context.Wards.ToList();
                     foreach (var ward in wards)
                     {
                         Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
                     }
-                    return $"{table}";
+                    return "";
                 }
-                if (table == "MedHistories")
+                else if (table == "Wards" && type == "2")
+                {
+                    var patients = context.Wards.ToList();
+
+                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
+                    string value = Console.ReadLine();
+
+                    if (value.Length > 5)
+                    {
+                        var conditionParts = new List<string>();
+                        var paramValues = new List<object>();
+
+                        var conditions = value.Split(',');
+
+                        foreach (var rawCondition in conditions)
+                        {
+                            string condition = rawCondition.Trim();
+
+                            int spaceCount = 0;
+                            string column_name = "";
+                            string sign = "";
+                            string column_value = "";
+
+                            for (int i = 0; i < condition.Length; i++)
+                            {
+                                char symb = condition[i];
+
+                                if (symb == ' ')
+                                {
+                                    spaceCount++;
+                                    continue;
+                                }
+
+                                if (spaceCount == 0)
+                                {
+                                    column_name += symb;
+                                }
+                                else if (spaceCount == 1)
+                                {
+                                    sign += symb;
+                                }
+                                else if (spaceCount >= 2)
+                                {
+                                    column_value += symb;
+                                }
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
+                            {
+                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
+                                paramValues.Add(column_value);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Ошибка разбора условия: {condition}");
+                                return "";
+                            }
+                        }
+
+                        string fullCondition = string.Join(" AND ", conditionParts);
+
+                        var result = context.Wards
+                            .Where(fullCondition, paramValues.ToArray())
+                            .ToList();
+
+                        foreach (var ward in result)
+                        {
+                            Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка ввода.");
+                    }
+
+                    return "";
+                }
+                if (table == "MedHistories" && type == "1")
                 {
                     var medhistories = context.MedHistories.ToList();
                     foreach (var medhistory in medhistories)
                     {
                         Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
                     }
-                    return $"{table}";
+                    return "";
+                }
+                else if (table == "MedHistories" && type == "2")
+                {
+                    var patients = context.MedHistories.ToList();
+
+                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
+                    string value = Console.ReadLine();
+
+                    if (value.Length > 5)
+                    {
+                        var conditionParts = new List<string>();
+                        var paramValues = new List<object>();
+
+                        var conditions = value.Split(',');
+
+                        foreach (var rawCondition in conditions)
+                        {
+                            string condition = rawCondition.Trim();
+
+                            int spaceCount = 0;
+                            string column_name = "";
+                            string sign = "";
+                            string column_value = "";
+
+                            for (int i = 0; i < condition.Length; i++)
+                            {
+                                char symb = condition[i];
+
+                                if (symb == ' ')
+                                {
+                                    spaceCount++;
+                                    continue;
+                                }
+
+                                if (spaceCount == 0)
+                                {
+                                    column_name += symb;
+                                }
+                                else if (spaceCount == 1)
+                                {
+                                    sign += symb;
+                                }
+                                else if (spaceCount >= 2)
+                                {
+                                    column_value += symb;
+                                }
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
+                            {
+                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
+                                paramValues.Add(column_value);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Ошибка разбора условия: {condition}");
+                                return "";
+                            }
+                        }
+
+                        string fullCondition = string.Join(" AND ", conditionParts);
+
+                        var result = context.MedHistories
+                            .Where(fullCondition, paramValues.ToArray())
+                            .ToList();
+
+                        foreach (var medhistory in result)
+                        {
+                            Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка ввода.");
+                    }
+
+                    return "";
                 }
             }
         }
@@ -439,7 +775,7 @@ class Program
                     {
                         Console.WriteLine($"Пациент с ID = {deleteId} не найден.");
                     }
-                    return $"{table}";
+                    return "";
                 }
                 if (table == "Doctors")
                 {
@@ -458,7 +794,7 @@ class Program
                     {
                         Console.WriteLine($"Доктор с ID = {deleteId} не найден.");
                     }
-                    return $"{table}";
+                    return "";
                 }
                 if (table == "Wards")
                 {
@@ -477,7 +813,7 @@ class Program
                     {
                         Console.WriteLine($"Палата с ID = {deleteId} не найден.");
                     }
-                    return $"{table}";
+                    return "";
                 }
                 if (table == "MedHistories")
                 {
@@ -496,7 +832,7 @@ class Program
                     {
                         Console.WriteLine($"Медицинская история с ID = {deleteId} не найден.");
                     }
-                    return $"{table}";
+                    return "";
                 }
             }
         }
@@ -576,7 +912,7 @@ class Program
                     {
                         Console.WriteLine($"Пациент с ID = {updateId} не найден.");
                     }
-                    return $"{table}";
+                    return "";
                 }
                 else if (table == "Doctors")
                 {
@@ -604,7 +940,7 @@ class Program
                             int WorkExperience = Int32.Parse(str_WorkExperience);
 
                             doctorUpdate.Name = str_Name;
-                            doctorUpdate.sex = str_Sex;
+                            doctorUpdate.Sex = str_Sex;
                             doctorUpdate.BirthDate = Birhdate;
                             doctorUpdate.Speciallity = str_Speciallity;
                             doctorUpdate.WorkExperience = WorkExperience;
@@ -622,7 +958,7 @@ class Program
                     {
                         Console.WriteLine($"Доктор с ID = {updateId} не найден.");
                     }
-                    return $"{table}";
+                    return "";
                 }
                 else if (table == "Wards")
                 {
@@ -658,7 +994,7 @@ class Program
                     {
                         Console.WriteLine($"Палата с ID = {updateId} не найдена.");
                     }
-                    return $"{table}";
+                    return "";
                 }
                 else if (table == "MedHistories")
                 {
@@ -717,11 +1053,112 @@ class Program
                     {
                         Console.WriteLine($"Медицинская история с ID = {updateId} не найдена.");
                     }
-                    return $"{table}";
+                    return "";
                 }
             }
         }
 
         return "Такой таблиц нет(";
     }
+
+    static string Sql_Query(string table, string sql_query)
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddDbContext<EternalPeaceDbContext>(options =>
+                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
+            .BuildServiceProvider();
+
+        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
+
+        var entityTypes = context.Model.GetEntityTypes();
+
+        foreach (var entityType in entityTypes)
+        {
+            if (entityType.GetTableName() == table)
+            {
+                if (table == "Patients")
+                {
+                    try
+                    {
+                        var result = context.Patients
+                            .FromSqlRaw(sql_query)
+                            .ToList();
+
+                        foreach (var patient in result)
+                        {
+                            Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
+                        Console.WriteLine(ex.Message);
+                    }
+                    return "";
+                }
+                if (table == "Doctors")
+                {
+                    try
+                    {
+                        var result = context.Doctors
+                            .FromSqlRaw(sql_query)
+                            .ToList();
+
+                        foreach (var doctor in result)
+                        {
+                            Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
+                        Console.WriteLine(ex.Message);
+                    }
+                    return "";
+                }
+                if (table == "Wards")
+                {
+                    try
+                    {
+                        var result = context.Wards
+                            .FromSqlRaw(sql_query)
+                            .ToList();
+
+                        foreach (var ward in result)
+                        {
+                            Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
+                        Console.WriteLine(ex.Message);
+                    }
+                    return "";
+                }
+                if (table == "MedHistories")
+                {
+                    try
+                    {
+                        var result = context.MedHistories
+                            .FromSqlRaw(sql_query)
+                            .ToList();
+
+                        foreach (var medhistory in result)
+                        {
+                            Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
+                        Console.WriteLine(ex.Message);
+                    }
+                    return "";
+                }
+            }
+        }
+        return "Такой таблиц нет(";
+    }
 }
+

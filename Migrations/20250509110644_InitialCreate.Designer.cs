@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EternalPeace.Migrations
 {
     [DbContext(typeof(EternalPeaceDbContext))]
-    [Migration("20250503081727_InitialCreate")]
+    [Migration("20250509110644_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -40,16 +40,16 @@ namespace EternalPeace.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Sex")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Speciallity")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("WorkExperience")
                         .HasColumnType("integer");
-
-                    b.Property<string>("sex")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

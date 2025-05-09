@@ -15,7 +15,7 @@ namespace EternalPeace.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public string sex { get; set; }
+        public string Sex { get; set; }
 
         public DateOnly BirthDate { get; set; }
 

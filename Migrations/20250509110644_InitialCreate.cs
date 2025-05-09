@@ -19,7 +19,7 @@ namespace EternalPeace.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    sex = table.Column<string>(type: "text", nullable: false),
+                    Sex = table.Column<string>(type: "text", nullable: false),
                     BirthDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Speciallity = table.Column<string>(type: "text", nullable: false),
                     WorkExperience = table.Column<int>(type: "integer", nullable: false)
