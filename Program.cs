@@ -16,6 +16,10 @@ using System.Diagnostics;
 using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Numerics;
+using System.Security.Cryptography;
+using System.Text;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 class Program
 {
@@ -29,99 +33,161 @@ class Program
 
         using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
 
-        string command = "0";
-        string table_name = "";
-        while (command != "6")
+        while (true)
         {
-            Console.WriteLine("1 - Поиск");
-            Console.WriteLine("2 - Добавить строку");
-            Console.WriteLine("3 - Удалить строку");
-            Console.WriteLine("4 - Изменить строку");
-            Console.WriteLine("5 - SQL запрос");
-            Console.WriteLine("6 - Выйти");
+            Console.WriteLine("====== МЕНЮ ======");
+            Console.WriteLine("1. Вход");
+            Console.WriteLine("0. Выход");
+            Console.Write("Выберите действие: ");
+            string choice = Console.ReadLine();
 
-            Console.WriteLine("Введите номер команды: ");
-            command = Console.ReadLine();
-
-            if (command == "1")
+            if (choice == "1")
             {
-                Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                table_name = Console.ReadLine();
-                if (table_name == "")
+                Console.WriteLine("Введите логин: ");
+                string user_login = Console.ReadLine();
+                Console.WriteLine("Введите пароль: ");
+                string user_password = Console.ReadLine();
+                var chu = CheckUser(user_login, user_password);
+                if (chu == true)
                 {
-                    Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                    Console.WriteLine("Загрузка...");
+                    Thread.Sleep(1200);
+                    Console.Clear();
+                    string command = "";
+                    string table_name = "";
+                    while (command != "0")
+                    {
+                        Console.WriteLine("============= МЕНЮ =============");
+                        Console.WriteLine("1 - Поиск");
+                        Console.WriteLine("2 - Добавить строку");
+                        Console.WriteLine("3 - Удалить строку");
+                        Console.WriteLine("4 - Изменить строку");
+                        Console.WriteLine("5 - SQL запрос");
+                        Console.WriteLine("6 - Создание нового пользователя");
+                        Console.WriteLine("0 - Выйти");
+
+                        Console.WriteLine("Введите номер команды: ");
+                        command = Console.ReadLine();
+
+                        if (command == "1")
+                        {
+                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
+                            table_name = Console.ReadLine();
+                            if (table_name == "")
+                            {
+                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("1 - Вывод всей таблицы");
+                                Console.WriteLine("2 - Вывод с фильтрацией");
+
+                                Console.WriteLine("Введите номер команды:");
+                                string command_type = Console.ReadLine();
+                                Console.WriteLine(Search(table_name, command_type));
+                            }
+                        }
+
+                        else if (command == "2")
+                        {
+                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
+                            table_name = Console.ReadLine();
+                            if (table_name == "")
+                            {
+                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(Add(table_name));
+                            }
+                        }
+
+                        else if (command == "3")
+                        {
+                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
+                            table_name = Console.ReadLine();
+                            if (table_name == "")
+                            {
+                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(Delete(table_name));
+                            }
+                        }
+
+                        else if (command == "4")
+                        {
+                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
+                            table_name = Console.ReadLine();
+                            if (table_name == "")
+                            {
+                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(Update(table_name));
+                            }
+                        }
+
+                        else if (command == "5")
+                        {
+                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
+                            table_name = Console.ReadLine();
+                            Console.WriteLine("Введите SQL запрос (формат: SELECT * FROM \"Doctors\" WHERE sex = 'Женщина'): ");
+                            string sql_query = Console.ReadLine();
+                            if (sql_query == "")
+                            {
+                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                            }
+                            else
+                            {
+                                Console.WriteLine(Sql_Query(table_name, sql_query));
+                            }
+                        }
+
+                        else if (command == "6")
+                        {
+                            Console.WriteLine("Введите имя создаваемого пользователя: ");
+                            string username = Console.ReadLine();
+                            Console.WriteLine("Введите пароль: ");
+                            string password = Console.ReadLine();
+                            if (username == "" || password == "")
+                            {
+                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
+                            }
+                            else
+                            {
+                                string hash = PasswordToHash(password);
+                                Console.WriteLine(CreateUser(username, hash, password));
+                            }
+                        }
+                        if (command == "0")
+                        {
+                            Console.WriteLine("Выход...");
+                            Thread.Sleep(1200);
+                            Console.Clear();
+                        }
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("1 - Вывод всей таблицы");
-                    Console.WriteLine("2 - Вывод с фильтрацией");
-
-                    Console.WriteLine("Введите номер команды:");
-                    string command_type = Console.ReadLine();
-                    Console.WriteLine(Search(table_name, command_type));
+                    Thread.Sleep(800);
+                    Console.Clear();
+                    continue;
                 }
             }
-
-            else if (command == "2")
+            else if (choice == "0")
             {
-                Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                table_name = Console.ReadLine();
-                if (table_name == "")
-                {
-                    Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                }
-                else
-                {
-                    Console.WriteLine(Add(table_name));
-                }
+                return;
             }
-
-            else if (command == "3")
+            else
             {
-                Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                table_name = Console.ReadLine();
-                if (table_name == "")
-                {
-                    Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                }
-                else
-                {
-                    Console.WriteLine(Delete(table_name));
-                }
+                Console.WriteLine("Неверная команда.");
+                Thread.Sleep(600);
+                Console.Clear();
             }
-
-            else if (command == "4")
-            {
-                Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                table_name = Console.ReadLine();
-                if (table_name == "")
-                {
-                    Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                }
-                else
-                {
-                    Console.WriteLine(Update(table_name));
-                }
-            }
-
-            else if (command == "5")
-            {
-                Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                table_name = Console.ReadLine();
-                Console.WriteLine("Введите SQL запрос (формат: SELECT * FROM \"Doctors\" WHERE sex = 'Женщина'): ");
-                string sql_query = Console.ReadLine();
-                if (sql_query == "")
-                {
-                    Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                }
-                else
-                {
-                    Console.WriteLine(Sql_Query(table_name, sql_query));
-                }
-            }
-
         }
-
     }
 
     static string Add(string table)
@@ -329,7 +395,7 @@ class Program
                         int PatientId = Int32.Parse(str_PatientId);
                         int DoctorId = Int32.Parse(str_DoctorId);
                         int WardId = Int32.Parse(str_WardId);
-                        int TreatmentCost = Int32.Parse(str_TreatmentCost);
+                        decimal TreatmentCost = decimal.Parse(str_TreatmentCost);
                         DateOnly RecordDate = DateOnly.Parse(str_RecordDate);
                         DateOnly DischargeDate = DateOnly.Parse(str_DischargeDate);
 
@@ -462,14 +528,20 @@ class Program
                         }
 
                         string fullCondition = string.Join(" AND ", conditionParts);
-
-                        var result = context.Patients
-                            .Where(fullCondition, paramValues.ToArray())
-                            .ToList();
-
-                        foreach (var patient in result)
+                        try
                         {
-                            Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
+                            var result = context.Patients
+                                .Where(fullCondition, paramValues.ToArray())
+                                .ToList();
+
+                            foreach (var patient in result)
+                            {
+                                Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            return "Ошибка ввода, параметр отсутствует в таблице.";
                         }
                     }
                     else
@@ -548,16 +620,23 @@ class Program
                         }
 
                         string fullCondition = string.Join(" AND ", conditionParts);
-
-                        var result = context.Doctors
-                            .Where(fullCondition, paramValues.ToArray())
-                            .ToList();
-
-                        foreach (var doctor in result)
+                        try
                         {
-                            Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
+                            var result = context.Doctors
+                                .Where(fullCondition, paramValues.ToArray())
+                                .ToList();
+
+                            foreach (var doctor in result)
+                            {
+                                Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            return "Ошибка ввода, параметр отсутствует в таблице.";
                         }
                     }
+
                     else
                     {
                         Console.WriteLine("Ошибка ввода.");
@@ -634,14 +713,20 @@ class Program
                         }
 
                         string fullCondition = string.Join(" AND ", conditionParts);
-
-                        var result = context.Wards
-                            .Where(fullCondition, paramValues.ToArray())
-                            .ToList();
-
-                        foreach (var ward in result)
+                        try
                         {
-                            Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
+                            var result = context.Wards
+                                .Where(fullCondition, paramValues.ToArray())
+                                .ToList();
+
+                            foreach (var ward in result)
+                            {
+                                Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            return "Ошибка ввода, параметр отсутствует в таблице.";
                         }
                     }
                     else
@@ -720,14 +805,20 @@ class Program
                         }
 
                         string fullCondition = string.Join(" AND ", conditionParts);
-
-                        var result = context.MedHistories
+                        
+                        try
+                        {
+                            var result = context.MedHistories
                             .Where(fullCondition, paramValues.ToArray())
                             .ToList();
-
-                        foreach (var medhistory in result)
+                            foreach (var medhistory in result)
+                            {
+                                Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
+                            }
+                        }
+                        catch (Exception)
                         {
-                            Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
+                            return "Ошибка ввода, параметр отсутствует в таблице.";
                         }
                     }
                     else
@@ -740,7 +831,7 @@ class Program
             }
         }
 
-        return "Такой таблиц нет(";
+        return "Такой таблицы нет(";
     }
 
     static string Delete(string table)
@@ -837,7 +928,7 @@ class Program
             }
         }
 
-        return "Такой таблиц нет(";
+        return "Такой таблицы нет(";
     }
 
     static string Update(string table)
@@ -1027,7 +1118,7 @@ class Program
                             int PatientId = Int32.Parse(str_PatientId);
                             int DoctorId = Int32.Parse(str_DoctorId);
                             int WardId = Int32.Parse(str_WardId);
-                            int TreatmentCost = Int32.Parse(str_TreatmentCost);
+                            decimal TreatmentCost = decimal.Parse(str_TreatmentCost);
                             DateOnly RecordDate = DateOnly.Parse(str_RecordDate);
                             DateOnly DischargeDate = DateOnly.Parse(str_DischargeDate);
 
@@ -1058,7 +1149,7 @@ class Program
             }
         }
 
-        return "Такой таблиц нет(";
+        return "Такой таблицы нет(";
     }
 
     static string Sql_Query(string table, string sql_query)
@@ -1158,7 +1249,71 @@ class Program
                 }
             }
         }
-        return "Такой таблиц нет(";
+        return "Такой таблицы нет(";
+    }
+
+    static string PasswordToHash(string password)
+    {
+        using SHA256 sha256 = SHA256.Create();
+        byte[] bytes = Encoding.UTF8.GetBytes(password);
+        byte[] hash = sha256.ComputeHash(bytes);
+        return Convert.ToBase64String(hash);
+    }
+
+    static string CreateUser(string username, string hash, string password)
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddDbContext<EternalPeaceDbContext>(options =>
+                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
+            .BuildServiceProvider();
+
+        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
+
+        bool userExists = context.Users.Any(u => u.UserName == username);
+
+        if (userExists)
+        {
+            return "Пользователь с таким логином уже существует.";
+        }
+        else
+        {
+            var new_user = new User
+            {
+                UserName = username,
+                PasswordHash = hash
+            };
+
+            context.Users.Add(new_user);
+            context.SaveChanges();
+
+            return $"Создан пользователь - {username} с паролем {password} .";
+        }
+
+        
+    }
+
+    static bool CheckUser(string user_login, string user_password)
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddDbContext<EternalPeaceDbContext>(options =>
+                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
+            .BuildServiceProvider();
+
+        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
+
+        var user = context.Users.FirstOrDefault(u => u.UserName == user_login);
+
+        string hash = PasswordToHash(user_password);
+        if (user != null && hash == user.PasswordHash)
+        {
+            Console.WriteLine("Успешный вход.");
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Неверный логин или пароль.");
+            return false;
+        }
     }
 }
 

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EternalPeace.Migrations
 {
     [DbContext(typeof(EternalPeaceDbContext))]
-    [Migration("20250509111023_FillOutTables")]
-    partial class FillOutTables
+    [Migration("20250510100520_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,8 +158,8 @@ namespace EternalPeace.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TreatmentCost")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("TreatmentCost")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("WardId")
                         .HasColumnType("integer");
@@ -184,7 +184,7 @@ namespace EternalPeace.Migrations
                             PatientId = 1,
                             RecordDate = new DateOnly(2025, 1, 5),
                             Status = "Выписан",
-                            TreatmentCost = 17500,
+                            TreatmentCost = 17500m,
                             WardId = 1
                         },
                         new
@@ -196,7 +196,7 @@ namespace EternalPeace.Migrations
                             PatientId = 2,
                             RecordDate = new DateOnly(2025, 1, 6),
                             Status = "Выписан",
-                            TreatmentCost = 35000,
+                            TreatmentCost = 35000m,
                             WardId = 4
                         },
                         new
@@ -208,7 +208,7 @@ namespace EternalPeace.Migrations
                             PatientId = 3,
                             RecordDate = new DateOnly(2025, 1, 6),
                             Status = "Выписан",
-                            TreatmentCost = 12000,
+                            TreatmentCost = 12000m,
                             WardId = 3
                         },
                         new
@@ -220,7 +220,7 @@ namespace EternalPeace.Migrations
                             PatientId = 4,
                             RecordDate = new DateOnly(2025, 1, 6),
                             Status = "Выписан",
-                            TreatmentCost = 25000,
+                            TreatmentCost = 25000m,
                             WardId = 1
                         },
                         new
@@ -232,7 +232,7 @@ namespace EternalPeace.Migrations
                             PatientId = 5,
                             RecordDate = new DateOnly(2025, 1, 7),
                             Status = "Выписан",
-                            TreatmentCost = 18500,
+                            TreatmentCost = 18500m,
                             WardId = 2
                         },
                         new
@@ -244,7 +244,7 @@ namespace EternalPeace.Migrations
                             PatientId = 6,
                             RecordDate = new DateOnly(2025, 1, 9),
                             Status = "Выписан",
-                            TreatmentCost = 22000,
+                            TreatmentCost = 22000m,
                             WardId = 2
                         },
                         new
@@ -256,7 +256,7 @@ namespace EternalPeace.Migrations
                             PatientId = 7,
                             RecordDate = new DateOnly(2025, 1, 9),
                             Status = "Выписан",
-                            TreatmentCost = 20000,
+                            TreatmentCost = 20000m,
                             WardId = 1
                         },
                         new
@@ -268,7 +268,7 @@ namespace EternalPeace.Migrations
                             PatientId = 8,
                             RecordDate = new DateOnly(2025, 1, 10),
                             Status = "Выписан",
-                            TreatmentCost = 58000,
+                            TreatmentCost = 58000m,
                             WardId = 4
                         },
                         new
@@ -280,7 +280,7 @@ namespace EternalPeace.Migrations
                             PatientId = 9,
                             RecordDate = new DateOnly(2025, 1, 10),
                             Status = "Выписан",
-                            TreatmentCost = 20000,
+                            TreatmentCost = 20000m,
                             WardId = 1
                         },
                         new
@@ -292,7 +292,7 @@ namespace EternalPeace.Migrations
                             PatientId = 10,
                             RecordDate = new DateOnly(2025, 1, 11),
                             Status = "Выписан",
-                            TreatmentCost = 19500,
+                            TreatmentCost = 19500m,
                             WardId = 1
                         },
                         new
@@ -304,7 +304,7 @@ namespace EternalPeace.Migrations
                             PatientId = 11,
                             RecordDate = new DateOnly(2025, 1, 13),
                             Status = "Выписан",
-                            TreatmentCost = 43500,
+                            TreatmentCost = 43500m,
                             WardId = 3
                         },
                         new
@@ -316,7 +316,7 @@ namespace EternalPeace.Migrations
                             PatientId = 12,
                             RecordDate = new DateOnly(2025, 1, 13),
                             Status = "Выписан",
-                            TreatmentCost = 120000,
+                            TreatmentCost = 120000m,
                             WardId = 5
                         },
                         new
@@ -328,7 +328,7 @@ namespace EternalPeace.Migrations
                             PatientId = 13,
                             RecordDate = new DateOnly(2025, 1, 14),
                             Status = "Выписан",
-                            TreatmentCost = 30000,
+                            TreatmentCost = 30000m,
                             WardId = 3
                         },
                         new
@@ -340,7 +340,7 @@ namespace EternalPeace.Migrations
                             PatientId = 14,
                             RecordDate = new DateOnly(2025, 1, 15),
                             Status = "Выписан",
-                            TreatmentCost = 11500,
+                            TreatmentCost = 11500m,
                             WardId = 2
                         },
                         new
@@ -352,7 +352,7 @@ namespace EternalPeace.Migrations
                             PatientId = 15,
                             RecordDate = new DateOnly(2025, 1, 16),
                             Status = "В плате",
-                            TreatmentCost = 83000,
+                            TreatmentCost = 83000m,
                             WardId = 6
                         },
                         new
@@ -364,7 +364,7 @@ namespace EternalPeace.Migrations
                             PatientId = 16,
                             RecordDate = new DateOnly(2025, 1, 18),
                             Status = "Выписан",
-                            TreatmentCost = 25000,
+                            TreatmentCost = 25000m,
                             WardId = 1
                         },
                         new
@@ -376,7 +376,7 @@ namespace EternalPeace.Migrations
                             PatientId = 17,
                             RecordDate = new DateOnly(2025, 1, 19),
                             Status = "В плате",
-                            TreatmentCost = 28500,
+                            TreatmentCost = 28500m,
                             WardId = 1
                         },
                         new
@@ -388,7 +388,7 @@ namespace EternalPeace.Migrations
                             PatientId = 2,
                             RecordDate = new DateOnly(2025, 1, 19),
                             Status = "В плате",
-                            TreatmentCost = 10000,
+                            TreatmentCost = 10000m,
                             WardId = 2
                         },
                         new
@@ -400,7 +400,7 @@ namespace EternalPeace.Migrations
                             PatientId = 18,
                             RecordDate = new DateOnly(2025, 1, 20),
                             Status = "В плате",
-                            TreatmentCost = 35000,
+                            TreatmentCost = 35000m,
                             WardId = 4
                         },
                         new
@@ -412,7 +412,7 @@ namespace EternalPeace.Migrations
                             PatientId = 19,
                             RecordDate = new DateOnly(2025, 1, 21),
                             Status = "В плате",
-                            TreatmentCost = 18000,
+                            TreatmentCost = 18000m,
                             WardId = 2
                         },
                         new
@@ -424,7 +424,7 @@ namespace EternalPeace.Migrations
                             PatientId = 8,
                             RecordDate = new DateOnly(2025, 1, 21),
                             Status = "В плате",
-                            TreatmentCost = 45000,
+                            TreatmentCost = 45000m,
                             WardId = 2
                         },
                         new
@@ -436,7 +436,7 @@ namespace EternalPeace.Migrations
                             PatientId = 20,
                             RecordDate = new DateOnly(2025, 1, 22),
                             Status = "В плате",
-                            TreatmentCost = 32500,
+                            TreatmentCost = 32500m,
                             WardId = 3
                         },
                         new
@@ -448,7 +448,7 @@ namespace EternalPeace.Migrations
                             PatientId = 5,
                             RecordDate = new DateOnly(2025, 1, 22),
                             Status = "В плате",
-                            TreatmentCost = 18500,
+                            TreatmentCost = 18500m,
                             WardId = 2
                         },
                         new
@@ -460,7 +460,7 @@ namespace EternalPeace.Migrations
                             PatientId = 6,
                             RecordDate = new DateOnly(2025, 1, 23),
                             Status = "В плате",
-                            TreatmentCost = 22500,
+                            TreatmentCost = 22500m,
                             WardId = 2
                         },
                         new
@@ -472,7 +472,7 @@ namespace EternalPeace.Migrations
                             PatientId = 6,
                             RecordDate = new DateOnly(2025, 1, 23),
                             Status = "В плате",
-                            TreatmentCost = 16500,
+                            TreatmentCost = 16500m,
                             WardId = 2
                         });
                 });
@@ -695,6 +695,47 @@ namespace EternalPeace.Migrations
                             InsuranceType = "-",
                             Name = "Орлов Ян Викторович",
                             Sex = "Мужчина"
+                        });
+                });
+
+            modelBuilder.Entity("EternalPeace.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PasswordHash = "O2Esdae1BIpDX7bsgeUv+S1teVqLWpwXBw9qY8l6U7I=",
+                            UserName = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PasswordHash = "phqK32ADh5Kiy4jmcLIFQKnWwsogSrdU/HaJUOeefTY=",
+                            UserName = "User"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PasswordHash = "xdfiUTEW4g6lVU5g39FwuyDFDTg6oI/Xe789IXQTncw=",
+                            UserName = "User2"
                         });
                 });
 

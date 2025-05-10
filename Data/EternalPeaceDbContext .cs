@@ -14,6 +14,7 @@ namespace EternalPeace.Data
         public DbSet<Ward> Wards { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<MedHistory> MedHistories { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +39,10 @@ namespace EternalPeace.Data
             modelBuilder.Entity<MedHistory>()
                 .Property(p => p.DischargeDate)
                 .HasColumnType("date");
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Id)
+                .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Patient>().HasData(
                 new Patient { Id = 1, Name = "Иванов Пётр Васильевич", Address = "102А, Люблинская улица", Sex = "Мужчина", BirthDate = new DateOnly(1990, 5, 1), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
@@ -108,6 +113,12 @@ namespace EternalPeace.Data
                 new MedHistory { Id = 23, PatientId = 5, Diseases = "Инфекционные заболевания почек", Status = "В плате", DoctorId = 3, WardId = 2, TreatmentCost = 18500, RecordDate = new DateOnly(2025, 1, 22), DischargeDate = new DateOnly(2025, 1, 27) },
                 new MedHistory { Id = 24, PatientId = 6, Diseases = "Язвенная болезнь желудка", Status = "В плате", DoctorId = 7, WardId = 2, TreatmentCost = 22500, RecordDate = new DateOnly(2025, 1, 23), DischargeDate = new DateOnly(2025, 1, 30) },
                 new MedHistory { Id = 25, PatientId = 6, Diseases = "Гипертония", Status = "В плате", DoctorId = 1, WardId = 2, TreatmentCost = 16500, RecordDate = new DateOnly(2025, 1, 23), DischargeDate = new DateOnly(2025, 1, 30) }
+            );
+
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = 1, UserName = "Admin", PasswordHash = "O2Esdae1BIpDX7bsgeUv+S1teVqLWpwXBw9qY8l6U7I=" }, //password - Admin123
+                new User { Id = 2, UserName = "User", PasswordHash = "phqK32ADh5Kiy4jmcLIFQKnWwsogSrdU/HaJUOeefTY=" }, //password - User123
+                new User { Id = 3, UserName = "User2", PasswordHash = "xdfiUTEW4g6lVU5g39FwuyDFDTg6oI/Xe789IXQTncw=" } //password - User2123
             );
         }
     }

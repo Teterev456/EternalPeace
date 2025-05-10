@@ -17,7 +17,7 @@ namespace EternalPeace.Models
         public string Status { get; set; }
         public int DoctorId { get; set; }
         public int WardId { get; set; }
-        public int TreatmentCost { get; set; }
+        public decimal TreatmentCost { get; set; }
 
         public DateOnly RecordDate { get; set; }
         public DateOnly? DischargeDate { get; set; }
