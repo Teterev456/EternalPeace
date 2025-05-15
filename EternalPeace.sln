@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EternalPeace", "EternalPeace.csproj", "{BF1B9122-2F58-46BC-BD32-F99937DE9166}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EternalPeace", "consoleapp\EternalPeace.csproj", "{3CE31AEA-DE9E-4FC9-AA77-37443F8BE013}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsClients", "winformsclients\WinFormsClients.csproj", "{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BF1B9122-2F58-46BC-BD32-F99937DE9166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF1B9122-2F58-46BC-BD32-F99937DE9166}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF1B9122-2F58-46BC-BD32-F99937DE9166}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF1B9122-2F58-46BC-BD32-F99937DE9166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CE31AEA-DE9E-4FC9-AA77-37443F8BE013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CE31AEA-DE9E-4FC9-AA77-37443F8BE013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CE31AEA-DE9E-4FC9-AA77-37443F8BE013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CE31AEA-DE9E-4FC9-AA77-37443F8BE013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

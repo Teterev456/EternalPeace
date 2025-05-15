@@ -1,25 +1,26 @@
-﻿using System;
-using System.Linq;
-using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
-using EternalPeace.Data;
+﻿using EternalPeace.Data;
 using EternalPeace.Models;
-using Npgsql;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Net;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Linq.Dynamic.Core;
-using System.Diagnostics;
-using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using System;
+using System.Data.Common;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Net;
+using System.Net.Sockets;
 using System.Numerics;
 using System.Security.Cryptography;
-using System.Text;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
+using System.Xml.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 class Program
 {
@@ -33,160 +34,24 @@ class Program
 
         using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
 
+        Console.WriteLine("TCP-сервер запущен на 127.0.0.1:5000...");
+        var listener = new TcpListener(IPAddress.Loopback, 5000);
+        listener.Start();
+
         while (true)
         {
-            Console.WriteLine("====== МЕНЮ ======");
-            Console.WriteLine("1. Вход");
-            Console.WriteLine("0. Выход");
-            Console.Write("Выберите действие: ");
-            string choice = Console.ReadLine();
+            using var client = listener.AcceptTcpClient();
+            using var stream = client.GetStream();
 
-            if (choice == "1")
-            {
-                Console.WriteLine("Введите логин: ");
-                string user_login = Console.ReadLine();
-                Console.WriteLine("Введите пароль: ");
-                string user_password = Console.ReadLine();
-                var chu = CheckUser(user_login, user_password);
-                if (chu == true)
-                {
-                    Console.WriteLine("Загрузка...");
-                    Thread.Sleep(1200);
-                    Console.Clear();
-                    string command = "";
-                    string table_name = "";
-                    while (command != "0")
-                    {
-                        Console.WriteLine("============= МЕНЮ =============");
-                        Console.WriteLine("1 - Поиск");
-                        Console.WriteLine("2 - Добавить строку");
-                        Console.WriteLine("3 - Удалить строку");
-                        Console.WriteLine("4 - Изменить строку");
-                        Console.WriteLine("5 - SQL запрос");
-                        Console.WriteLine("6 - Создание нового пользователя");
-                        Console.WriteLine("0 - Выйти");
+            var buffer = new byte[1024];
+            int bytesRead = stream.Read(buffer, 0, buffer.Length);
+            string request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                        Console.WriteLine("Введите номер команды: ");
-                        command = Console.ReadLine();
+            Console.WriteLine($"Получено: {request}");
 
-                        if (command == "1")
-                        {
-                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                            table_name = Console.ReadLine();
-                            if (table_name == "")
-                            {
-                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("1 - Вывод всей таблицы");
-                                Console.WriteLine("2 - Вывод с фильтрацией");
-
-                                Console.WriteLine("Введите номер команды:");
-                                string command_type = Console.ReadLine();
-                                Console.WriteLine(Search(table_name, command_type));
-                            }
-                        }
-
-                        else if (command == "2")
-                        {
-                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                            table_name = Console.ReadLine();
-                            if (table_name == "")
-                            {
-                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                            }
-                            else
-                            {
-                                Console.WriteLine(Add(table_name));
-                            }
-                        }
-
-                        else if (command == "3")
-                        {
-                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                            table_name = Console.ReadLine();
-                            if (table_name == "")
-                            {
-                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                            }
-                            else
-                            {
-                                Console.WriteLine(Delete(table_name));
-                            }
-                        }
-
-                        else if (command == "4")
-                        {
-                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                            table_name = Console.ReadLine();
-                            if (table_name == "")
-                            {
-                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                            }
-                            else
-                            {
-                                Console.WriteLine(Update(table_name));
-                            }
-                        }
-
-                        else if (command == "5")
-                        {
-                            Console.WriteLine("Введите название таблицы (с большой буквы): ");
-                            table_name = Console.ReadLine();
-                            Console.WriteLine("Введите SQL запрос (формат: SELECT * FROM \"Doctors\" WHERE sex = 'Женщина'): ");
-                            string sql_query = Console.ReadLine();
-                            if (sql_query == "")
-                            {
-                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                            }
-                            else
-                            {
-                                Console.WriteLine(Sql_Query(table_name, sql_query));
-                            }
-                        }
-
-                        else if (command == "6")
-                        {
-                            Console.WriteLine("Введите имя создаваемого пользователя: ");
-                            string username = Console.ReadLine();
-                            Console.WriteLine("Введите пароль: ");
-                            string password = Console.ReadLine();
-                            if (username == "" || password == "")
-                            {
-                                Console.WriteLine("Ошибка ввода, значение не должно быть пустым.");
-                            }
-                            else
-                            {
-                                string hash = PasswordToHash(password);
-                                Console.WriteLine(CreateUser(username, hash, password));
-                            }
-                        }
-                        if (command == "0")
-                        {
-                            Console.WriteLine("Выход...");
-                            Thread.Sleep(1200);
-                            Console.Clear();
-                        }
-                    }
-                }
-                else
-                {
-                    Thread.Sleep(800);
-                    Console.Clear();
-                    continue;
-                }
-            }
-            else if (choice == "0")
-            {
-                return;
-            }
-            else
-            {
-                Console.WriteLine("Неверная команда.");
-                Thread.Sleep(600);
-                Console.Clear();
-            }
+            string response = CommandHandler.HandleCommand(request, serviceProvider);
+            var responseData = Encoding.UTF8.GetBytes(response);
+            stream.Write(responseData, 0, responseData.Length);
         }
     }
 
@@ -438,396 +303,6 @@ class Program
                 }
 
                 return "";
-            }
-        }
-
-        return "Такой таблицы нет(";
-    }
-
-    static string Search(string table, string type)
-    {
-        var serviceProvider = new ServiceCollection()
-            .AddDbContext<EternalPeaceDbContext>(options =>
-                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
-            .BuildServiceProvider();
-
-        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
-
-        var entityTypes = context.Model.GetEntityTypes();
-
-        foreach (var entityType in entityTypes)
-        {
-            if (entityType.GetTableName() == table)
-            {
-                if (table == "Patients" && type == "1")
-                {
-                    var patients = context.Patients.ToList();
-                    foreach (var patient in patients)
-                    {
-                        Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
-                    }
-                    return "";
-                }
-                else if (table == "Patients" && type == "2")
-                {
-                    var patients = context.Patients.ToList();
-
-                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
-                    string value = Console.ReadLine();
-
-                    if (value.Length > 5)
-                    {
-                        var conditionParts = new List<string>();
-                        var paramValues = new List<object>();
-
-                        var conditions = value.Split(',');
-
-                        foreach (var rawCondition in conditions)
-                        {
-                            string condition = rawCondition.Trim();
-
-                            int spaceCount = 0;
-                            string column_name = "";
-                            string sign = "";
-                            string column_value = "";
-
-                            for (int i = 0; i < condition.Length; i++)
-                            {
-                                char symb = condition[i];
-
-                                if (symb == ' ')
-                                {
-                                    spaceCount++;
-                                    continue;
-                                }
-
-                                if (spaceCount == 0)
-                                {
-                                    column_name += symb;
-                                }
-                                else if (spaceCount == 1)
-                                {
-                                    sign += symb;
-                                }
-                                else if (spaceCount >= 2)
-                                {
-                                    column_value += symb;
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
-                            {
-                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
-                                paramValues.Add(column_value);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Ошибка разбора условия: {condition}");
-                                return "";
-                            }
-                        }
-
-                        string fullCondition = string.Join(" AND ", conditionParts);
-                        try
-                        {
-                            var result = context.Patients
-                                .Where(fullCondition, paramValues.ToArray())
-                                .ToList();
-
-                            foreach (var patient in result)
-                            {
-                                Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            return "Ошибка ввода, параметр отсутствует в таблице.";
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ошибка ввода.");
-                    }
-
-                    return "";
-                }
-                if (table == "Doctors" && type == "1")
-                {
-                    var doctors = context.Doctors.ToList();
-                    foreach (var doctor in doctors)
-                    {
-                        Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
-                    }
-                    return "";
-                }
-                else if (table == "Doctors" && type == "2")
-                {
-                    var patients = context.Doctors.ToList();
-
-                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
-                    string value = Console.ReadLine();
-
-                    if (value.Length > 5)
-                    {
-                        var conditionParts = new List<string>();
-                        var paramValues = new List<object>();
-
-                        var conditions = value.Split(',');
-
-                        foreach (var rawCondition in conditions)
-                        {
-                            string condition = rawCondition.Trim();
-
-                            int spaceCount = 0;
-                            string column_name = "";
-                            string sign = "";
-                            string column_value = "";
-
-                            for (int i = 0; i < condition.Length; i++)
-                            {
-                                char symb = condition[i];
-
-                                if (symb == ' ')
-                                {
-                                    spaceCount++;
-                                    continue;
-                                }
-
-                                if (spaceCount == 0)
-                                {
-                                    column_name += symb;
-                                }
-                                else if (spaceCount == 1)
-                                {
-                                    sign += symb;
-                                }
-                                else if (spaceCount >= 2)
-                                {
-                                    column_value += symb;
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
-                            {
-                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
-                                paramValues.Add(column_value);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Ошибка разбора условия: {condition}");
-                                return "";
-                            }
-                        }
-
-                        string fullCondition = string.Join(" AND ", conditionParts);
-                        try
-                        {
-                            var result = context.Doctors
-                                .Where(fullCondition, paramValues.ToArray())
-                                .ToList();
-
-                            foreach (var doctor in result)
-                            {
-                                Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            return "Ошибка ввода, параметр отсутствует в таблице.";
-                        }
-                    }
-
-                    else
-                    {
-                        Console.WriteLine("Ошибка ввода.");
-                    }
-
-                    return "";
-                }
-                if (table == "Wards" && type == "1")
-                {
-                    var wards = context.Wards.ToList();
-                    foreach (var ward in wards)
-                    {
-                        Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
-                    }
-                    return "";
-                }
-                else if (table == "Wards" && type == "2")
-                {
-                    var patients = context.Wards.ToList();
-
-                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
-                    string value = Console.ReadLine();
-
-                    if (value.Length > 5)
-                    {
-                        var conditionParts = new List<string>();
-                        var paramValues = new List<object>();
-
-                        var conditions = value.Split(',');
-
-                        foreach (var rawCondition in conditions)
-                        {
-                            string condition = rawCondition.Trim();
-
-                            int spaceCount = 0;
-                            string column_name = "";
-                            string sign = "";
-                            string column_value = "";
-
-                            for (int i = 0; i < condition.Length; i++)
-                            {
-                                char symb = condition[i];
-
-                                if (symb == ' ')
-                                {
-                                    spaceCount++;
-                                    continue;
-                                }
-
-                                if (spaceCount == 0)
-                                {
-                                    column_name += symb;
-                                }
-                                else if (spaceCount == 1)
-                                {
-                                    sign += symb;
-                                }
-                                else if (spaceCount >= 2)
-                                {
-                                    column_value += symb;
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
-                            {
-                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
-                                paramValues.Add(column_value);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Ошибка разбора условия: {condition}");
-                                return "";
-                            }
-                        }
-
-                        string fullCondition = string.Join(" AND ", conditionParts);
-                        try
-                        {
-                            var result = context.Wards
-                                .Where(fullCondition, paramValues.ToArray())
-                                .ToList();
-
-                            foreach (var ward in result)
-                            {
-                                Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            return "Ошибка ввода, параметр отсутствует в таблице.";
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ошибка ввода.");
-                    }
-
-                    return "";
-                }
-                if (table == "MedHistories" && type == "1")
-                {
-                    var medhistories = context.MedHistories.ToList();
-                    foreach (var medhistory in medhistories)
-                    {
-                        Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
-                    }
-                    return "";
-                }
-                else if (table == "MedHistories" && type == "2")
-                {
-                    var patients = context.MedHistories.ToList();
-
-                    Console.WriteLine("Введите условия (формат: 'x = 10, y < 5, z >= 4'): ");
-                    string value = Console.ReadLine();
-
-                    if (value.Length > 5)
-                    {
-                        var conditionParts = new List<string>();
-                        var paramValues = new List<object>();
-
-                        var conditions = value.Split(',');
-
-                        foreach (var rawCondition in conditions)
-                        {
-                            string condition = rawCondition.Trim();
-
-                            int spaceCount = 0;
-                            string column_name = "";
-                            string sign = "";
-                            string column_value = "";
-
-                            for (int i = 0; i < condition.Length; i++)
-                            {
-                                char symb = condition[i];
-
-                                if (symb == ' ')
-                                {
-                                    spaceCount++;
-                                    continue;
-                                }
-
-                                if (spaceCount == 0)
-                                {
-                                    column_name += symb;
-                                }
-                                else if (spaceCount == 1)
-                                {
-                                    sign += symb;
-                                }
-                                else if (spaceCount >= 2)
-                                {
-                                    column_value += symb;
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(column_name) && !string.IsNullOrWhiteSpace(sign) && !string.IsNullOrWhiteSpace(column_value))
-                            {
-                                conditionParts.Add($"{column_name} {sign} @{paramValues.Count}");
-                                paramValues.Add(column_value);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Ошибка разбора условия: {condition}");
-                                return "";
-                            }
-                        }
-
-                        string fullCondition = string.Join(" AND ", conditionParts);
-                        
-                        try
-                        {
-                            var result = context.MedHistories
-                            .Where(fullCondition, paramValues.ToArray())
-                            .ToList();
-                            foreach (var medhistory in result)
-                            {
-                                Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            return "Ошибка ввода, параметр отсутствует в таблице.";
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ошибка ввода.");
-                    }
-
-                    return "";
-                }
             }
         }
 
@@ -1252,14 +727,6 @@ class Program
         return "Такой таблицы нет(";
     }
 
-    static string PasswordToHash(string password)
-    {
-        using SHA256 sha256 = SHA256.Create();
-        byte[] bytes = Encoding.UTF8.GetBytes(password);
-        byte[] hash = sha256.ComputeHash(bytes);
-        return Convert.ToBase64String(hash);
-    }
-
     static string CreateUser(string username, string hash, string password)
     {
         var serviceProvider = new ServiceCollection()
@@ -1288,32 +755,5 @@ class Program
 
             return $"Создан пользователь - {username} с паролем {password} .";
         }
-
-        
-    }
-
-    static bool CheckUser(string user_login, string user_password)
-    {
-        var serviceProvider = new ServiceCollection()
-            .AddDbContext<EternalPeaceDbContext>(options =>
-                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
-            .BuildServiceProvider();
-
-        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
-
-        var user = context.Users.FirstOrDefault(u => u.UserName == user_login);
-
-        string hash = PasswordToHash(user_password);
-        if (user != null && hash == user.PasswordHash)
-        {
-            Console.WriteLine("Успешный вход.");
-            return true;
-        }
-        else
-        {
-            Console.WriteLine("Неверный логин или пароль.");
-            return false;
-        }
     }
 }
-
