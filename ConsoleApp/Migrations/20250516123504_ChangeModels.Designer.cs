@@ -3,6 +3,7 @@ using System;
 using EternalPeace.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EternalPeace.Migrations
 {
     [DbContext(typeof(EternalPeaceDbContext))]
-    partial class EternalPeaceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250516123504_ChangeModels")]
+    partial class ChangeModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -512,7 +515,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 1,
-                            Address = "102А Люблинская улица",
+                            Address = "102А, Люблинская улица",
                             BirthDate = new DateOnly(1990, 5, 1),
                             InsuranceType = "Полис ОМС",
                             Name = "Иванов Пётр Васильевич",
@@ -521,7 +524,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 2,
-                            Address = "24 Новозаводская улица",
+                            Address = "24, Новозаводская улица",
                             BirthDate = new DateOnly(1997, 9, 14),
                             InsuranceType = "Полис ОМС",
                             Name = "Денисова Амина Данииловна",
@@ -530,7 +533,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 3,
-                            Address = "47 Деревня Чепелево",
+                            Address = "47, Деревня Чепелево",
                             BirthDate = new DateOnly(2001, 1, 3),
                             InsuranceExpDate = new DateOnly(2027, 12, 31),
                             InsuranceType = "ДМС",
@@ -540,7 +543,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 4,
-                            Address = "47 Автозаводская улица",
+                            Address = "47, 2, Автозаводская улица",
                             BirthDate = new DateOnly(1976, 8, 15),
                             InsuranceType = "Полис ОМС",
                             Name = "Жуков Алексей Матвеевич",
@@ -549,7 +552,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 5,
-                            Address = "21А проспект 50 лет Октября",
+                            Address = "21А, проспект 50 лет Октября",
                             BirthDate = new DateOnly(1988, 2, 28),
                             InsuranceType = "Полис ОМС",
                             Name = "Токарева София Тимофеевна",
@@ -558,7 +561,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 6,
-                            Address = "40Ж Проезжая улица",
+                            Address = "40Ж, Проезжая улица",
                             BirthDate = new DateOnly(1993, 6, 11),
                             InsuranceType = "Полис ОМС",
                             Name = "Денисова Амина Данииловна",
@@ -567,7 +570,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 7,
-                            Address = "18 улица 1 Мая",
+                            Address = "18, улица 1 Мая",
                             BirthDate = new DateOnly(2002, 6, 6),
                             InsuranceType = "Полис ОМС",
                             Name = "Морозов Карим Даниилович",
@@ -576,7 +579,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 8,
-                            Address = "8А улица Руставели",
+                            Address = "8А, улица Руставели",
                             BirthDate = new DateOnly(1996, 9, 8),
                             InsuranceExpDate = new DateOnly(2025, 12, 31),
                             InsuranceType = "ДМС",
@@ -586,7 +589,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 9,
-                            Address = "28 Пенягинская улица",
+                            Address = "28, Пенягинская улица",
                             BirthDate = new DateOnly(2005, 1, 18),
                             InsuranceType = "Полис ОМС",
                             Name = "Крюков Никита Романович",
@@ -595,7 +598,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 10,
-                            Address = "22 Олимпийский проспект",
+                            Address = "22, Олимпийский проспект",
                             BirthDate = new DateOnly(1977, 8, 29),
                             InsuranceType = "Полис ОМС",
                             Name = "Гусев Михаил Богданович",
@@ -604,7 +607,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 11,
-                            Address = "9 Рябиновая улица",
+                            Address = "9, Рябиновая улица",
                             BirthDate = new DateOnly(1999, 3, 22),
                             InsuranceType = "-",
                             Name = "Макаров Марк Макарович",
@@ -613,7 +616,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 12,
-                            Address = "34 проспект 50 лет Октября",
+                            Address = "34, проспект 50 лет Октября",
                             BirthDate = new DateOnly(1965, 4, 7),
                             InsuranceType = "Полис ОМС",
                             Name = "Новиков Алексей Артёмович",
@@ -622,7 +625,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 13,
-                            Address = "13 Гончарная улица",
+                            Address = "13, Гончарная улица",
                             BirthDate = new DateOnly(1988, 5, 12),
                             InsuranceExpDate = new DateOnly(2025, 3, 12),
                             InsuranceType = "ДМС",
@@ -632,7 +635,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 14,
-                            Address = "11 Коммунистическая улица",
+                            Address = "11, Коммунистическая улица",
                             BirthDate = new DateOnly(2001, 1, 22),
                             InsuranceType = "Полис ОМС",
                             Name = "Кожевникова Виктория Семёновна",
@@ -641,7 +644,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 15,
-                            Address = "9 Рябиновая улица",
+                            Address = "9, Рябиновая улица",
                             BirthDate = new DateOnly(1958, 10, 23),
                             InsuranceType = "Полис ОМС",
                             Name = "Никонова Лидия Марковна",
@@ -650,7 +653,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 16,
-                            Address = "9 Рябиновая улица",
+                            Address = "9, Рябиновая улица",
                             BirthDate = new DateOnly(1959, 7, 1),
                             InsuranceType = "Полис ОМС",
                             Name = "Никонов Павел Витальевич",
@@ -659,7 +662,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 17,
-                            Address = "47 Пенягинская улица",
+                            Address = "47, Пенягинская улица",
                             BirthDate = new DateOnly(1973, 11, 15),
                             InsuranceType = "Полис ОМС",
                             Name = "Иванов Федот Павлович",
@@ -668,7 +671,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 18,
-                            Address = "87 Новозаводская улица",
+                            Address = "87, Новозаводская улица",
                             BirthDate = new DateOnly(1998, 11, 11),
                             InsuranceExpDate = new DateOnly(2027, 2, 25),
                             InsuranceType = "ДМС",
@@ -678,7 +681,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 19,
-                            Address = "13 3-й Железнодорожный тупик",
+                            Address = "13, 3-й Железнодорожный тупик",
                             BirthDate = new DateOnly(1988, 4, 27),
                             InsuranceType = "Полис ОМС",
                             Name = "Петрова Мария Алексеевна",
@@ -687,7 +690,7 @@ namespace EternalPeace.Migrations
                         new
                         {
                             Id = 20,
-                            Address = "32 Деревня Чепелево",
+                            Address = "32, Деревня Чепелево",
                             BirthDate = new DateOnly(2000, 2, 2),
                             InsuranceType = "-",
                             Name = "Орлов Ян Викторович",

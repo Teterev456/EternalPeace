@@ -23,13 +23,13 @@ namespace EternalPeace.Models
         public DateOnly? DischargeDate { get; set; }
 
         [ForeignKey("PatientId")]
-        public virtual Patient Patient { get; set; }
+        public virtual Patient Patient { get; set; } = null!;
 
         [ForeignKey("DoctorId")]
-        public virtual Doctor Doctor { get; set; }
+        public virtual Doctor Doctor { get; set; } = null!;
 
         [ForeignKey("WardId")]
-        public virtual Ward Ward { get; set; }
+        public virtual Ward Ward { get; set; } = null!;
 
     }
 }

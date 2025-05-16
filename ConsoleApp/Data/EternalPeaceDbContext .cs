@@ -45,26 +45,26 @@ namespace EternalPeace.Data
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Patient>().HasData(
-                new Patient { Id = 1, Name = "Иванов Пётр Васильевич", Address = "102А, Люблинская улица", Sex = "Мужчина", BirthDate = new DateOnly(1990, 5, 1), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 2, Name = "Денисова Амина Данииловна", Address = "24, Новозаводская улица", Sex = "Женщина", BirthDate = new DateOnly(1997, 9, 14), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 3, Name = "Лаврентьев Даниил Кириллович", Address = "47, Деревня Чепелево", Sex = "Мужчина", BirthDate = new DateOnly(2001, 1, 3), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2027, 12, 31) },
-                new Patient { Id = 4, Name = "Жуков Алексей Матвеевич", Address = "47, 2, Автозаводская улица", Sex = "Мужчина", BirthDate = new DateOnly(1976, 8, 15), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 5, Name = "Токарева София Тимофеевна", Address = "21А, проспект 50 лет Октября", Sex = "Женщина", BirthDate = new DateOnly(1988, 2, 28), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 6, Name = "Денисова Амина Данииловна", Address = "40Ж, Проезжая улица", Sex = "Женщина", BirthDate = new DateOnly(1993, 6, 11), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 7, Name = "Морозов Карим Даниилович", Address = "18, улица 1 Мая", Sex = "Мужчина", BirthDate = new DateOnly(2002, 6, 6), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 8, Name = "Суслова Полина Дмитриевна", Address = "8А, улица Руставели", Sex = "Женщина", BirthDate = new DateOnly(1996, 9, 8), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2025, 12, 31) },
-                new Patient { Id = 9, Name = "Крюков Никита Романович", Address = "28, Пенягинская улица", Sex = "Мужчина", BirthDate = new DateOnly(2005, 1, 18), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 10, Name = "Гусев Михаил Богданович", Address = "22, Олимпийский проспект", Sex = "Мужчина", BirthDate = new DateOnly(1977, 8, 29), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 11, Name = "Макаров Марк Макарович", Address = "9, Рябиновая улица", Sex = "Мужчина", BirthDate = new DateOnly(1999, 3, 22), InsuranceType = "-", InsuranceExpDate = null },
-                new Patient { Id = 12, Name = "Новиков Алексей Артёмович", Address = "34, проспект 50 лет Октября", Sex = "Мужчина", BirthDate = new DateOnly(1965, 4, 7), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 13, Name = "Дроздов Степан Александрович", Address = "13, Гончарная улица", Sex = "Мужчина", BirthDate = new DateOnly(1988, 5, 12), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2025, 3, 12) },
-                new Patient { Id = 14, Name = "Кожевникова Виктория Семёновна", Address = "11, Коммунистическая улица", Sex = "Женщина", BirthDate = new DateOnly(2001, 1, 22), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 15, Name = "Никонова Лидия Марковна", Address = "9, Рябиновая улица", Sex = "Женщина", BirthDate = new DateOnly(1958, 10, 23), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 16, Name = "Никонов Павел Витальевич", Address = "9, Рябиновая улица", Sex = "Мужчина", BirthDate = new DateOnly(1959, 7, 1), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 17, Name = "Иванов Федот Павлович", Address = "47, Пенягинская улица", Sex = "Мужчина", BirthDate = new DateOnly(1973, 11, 15), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 18, Name = "Гусева Мария Богдановна", Address = "87, Новозаводская улица", Sex = "Женщина", BirthDate = new DateOnly(1998, 11, 11), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2027, 2, 25) },
-                new Patient { Id = 19, Name = "Петрова Мария Алексеевна", Address = "13, 3-й Железнодорожный тупик", Sex = "Женщина", BirthDate = new DateOnly(1988, 4, 27), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
-                new Patient { Id = 20, Name = "Орлов Ян Викторович", Address = "32, Деревня Чепелево", Sex = "Мужчина", BirthDate = new DateOnly(2000, 2, 2), InsuranceType = "-", InsuranceExpDate = null }
+                new Patient { Id = 1, Name = "Иванов Пётр Васильевич", Address = "102А Люблинская улица", Sex = "Мужчина", BirthDate = new DateOnly(1990, 5, 1), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 2, Name = "Денисова Амина Данииловна", Address = "24 Новозаводская улица", Sex = "Женщина", BirthDate = new DateOnly(1997, 9, 14), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 3, Name = "Лаврентьев Даниил Кириллович", Address = "47 Деревня Чепелево", Sex = "Мужчина", BirthDate = new DateOnly(2001, 1, 3), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2027, 12, 31) },
+                new Patient { Id = 4, Name = "Жуков Алексей Матвеевич", Address = "47 Автозаводская улица", Sex = "Мужчина", BirthDate = new DateOnly(1976, 8, 15), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 5, Name = "Токарева София Тимофеевна", Address = "21А проспект 50 лет Октября", Sex = "Женщина", BirthDate = new DateOnly(1988, 2, 28), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 6, Name = "Денисова Амина Данииловна", Address = "40Ж Проезжая улица", Sex = "Женщина", BirthDate = new DateOnly(1993, 6, 11), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 7, Name = "Морозов Карим Даниилович", Address = "18 улица 1 Мая", Sex = "Мужчина", BirthDate = new DateOnly(2002, 6, 6), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 8, Name = "Суслова Полина Дмитриевна", Address = "8А улица Руставели", Sex = "Женщина", BirthDate = new DateOnly(1996, 9, 8), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2025, 12, 31) },
+                new Patient { Id = 9, Name = "Крюков Никита Романович", Address = "28 Пенягинская улица", Sex = "Мужчина", BirthDate = new DateOnly(2005, 1, 18), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 10, Name = "Гусев Михаил Богданович", Address = "22 Олимпийский проспект", Sex = "Мужчина", BirthDate = new DateOnly(1977, 8, 29), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 11, Name = "Макаров Марк Макарович", Address = "9 Рябиновая улица", Sex = "Мужчина", BirthDate = new DateOnly(1999, 3, 22), InsuranceType = "-", InsuranceExpDate = null },
+                new Patient { Id = 12, Name = "Новиков Алексей Артёмович", Address = "34 проспект 50 лет Октября", Sex = "Мужчина", BirthDate = new DateOnly(1965, 4, 7), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 13, Name = "Дроздов Степан Александрович", Address = "13 Гончарная улица", Sex = "Мужчина", BirthDate = new DateOnly(1988, 5, 12), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2025, 3, 12) },
+                new Patient { Id = 14, Name = "Кожевникова Виктория Семёновна", Address = "11 Коммунистическая улица", Sex = "Женщина", BirthDate = new DateOnly(2001, 1, 22), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 15, Name = "Никонова Лидия Марковна", Address = "9 Рябиновая улица", Sex = "Женщина", BirthDate = new DateOnly(1958, 10, 23), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 16, Name = "Никонов Павел Витальевич", Address = "9 Рябиновая улица", Sex = "Мужчина", BirthDate = new DateOnly(1959, 7, 1), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 17, Name = "Иванов Федот Павлович", Address = "47 Пенягинская улица", Sex = "Мужчина", BirthDate = new DateOnly(1973, 11, 15), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 18, Name = "Гусева Мария Богдановна", Address = "87 Новозаводская улица", Sex = "Женщина", BirthDate = new DateOnly(1998, 11, 11), InsuranceType = "ДМС", InsuranceExpDate = new DateOnly(2027, 2, 25) },
+                new Patient { Id = 19, Name = "Петрова Мария Алексеевна", Address = "13 3-й Железнодорожный тупик", Sex = "Женщина", BirthDate = new DateOnly(1988, 4, 27), InsuranceType = "Полис ОМС", InsuranceExpDate = null },
+                new Patient { Id = 20, Name = "Орлов Ян Викторович", Address = "32 Деревня Чепелево", Sex = "Мужчина", BirthDate = new DateOnly(2000, 2, 2), InsuranceType = "-", InsuranceExpDate = null }
             );
 
             modelBuilder.Entity<Doctor>().HasData(

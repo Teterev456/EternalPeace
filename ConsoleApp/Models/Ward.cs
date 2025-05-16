@@ -16,6 +16,6 @@ namespace EternalPeace.Models
         [Required]
         public string WardType { get; set; }
 
-        public virtual ICollection<MedHistory> MedHistories { get; set; }
+        public virtual ICollection<MedHistory> MedHistories { get; set; } = new List<MedHistory>();
     }
 }

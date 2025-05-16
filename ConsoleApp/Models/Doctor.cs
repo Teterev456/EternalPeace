@@ -24,6 +24,6 @@ namespace EternalPeace.Models
         [Required]
         public int WorkExperience { get; set; }
 
-        public virtual ICollection<MedHistory> MedHistories { get; set; }
+        public virtual ICollection<MedHistory> MedHistories { get; set; } = new List<MedHistory>();
     }
 }

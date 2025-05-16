@@ -23,6 +23,6 @@ namespace EternalPeace.Models
         public string InsuranceType { get; set; }
         public DateOnly? InsuranceExpDate { get; set; }
 
-        public virtual ICollection<MedHistory> MedHistories { get; set; }
+        public virtual ICollection<MedHistory> MedHistories { get; set; } = new List<MedHistory>();
     }
 }
