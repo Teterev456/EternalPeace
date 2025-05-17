@@ -7,6 +7,7 @@ using System.Linq.Dynamic.Core;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 public static class CommandHandler
@@ -86,7 +87,59 @@ public static class CommandHandler
 
             return Sql_Query(table, sqlQuery);
         }
+        else if (request.StartsWith("UPDATE "))
+        {
+            string[] tokens = request.Split(' ', 4);
 
+            if (tokens.Length < 4)
+                return "ERROR: Invalid format";
+
+            string table = tokens[1];
+
+            if (!int.TryParse(tokens[2], out int id))
+                return "Ошибка: некорректный ID.";
+
+            string condition = tokens[3];
+
+            var (setClause, parameters, error) = SearchFiltr(condition, "2");
+            if (!string.IsNullOrEmpty(error))
+                return $"Ошибка в условии: {error}";
+
+            var conditions = condition.Split(',');
+            var setParts = new List<string>();
+            int paramIndex = 0;
+
+            foreach (var raw in conditions)
+            {
+                string cond = raw.Trim();
+                string[] ops = new[] { ">=", "<=", "!=", "=", ">", "<" };
+                string foundOperator = null;
+                int opIndex = -1;
+
+                foreach (var op in ops)
+                {
+                    opIndex = cond.IndexOf(op, StringComparison.Ordinal);
+                    if (opIndex > 0)
+                    {
+                        foundOperator = op;
+                        break;
+                    }
+                }
+
+                if (foundOperator == null)
+                    return $"Ошибка: не удалось определить оператор в '{cond}'";
+
+                string columnName = cond.Substring(0, opIndex).Trim();
+
+                setParts.Add($"{columnName} = @p{paramIndex}");
+                paramIndex++;
+            }
+
+            setClause = string.Join(", ", setParts);
+
+            string result = Update(table, id, setClause, parameters);
+            return result;
+        }
         return "ERROR";
     }
 
@@ -286,14 +339,14 @@ public static class CommandHandler
         return "Такой таблицы нет(";
     }
 
-    static (string conditionSql, object[] parameters, string error) SearchFiltr(string condition)
+    static (string conditionSql, object[] parameters, string error) SearchFiltr(string condition, string TypeFilter = "1")
     {
         if (string.IsNullOrWhiteSpace(condition) || condition.Length < 5)
             return ("", [], "Ошибка: пустое или слишком короткое условие.");
 
         var conditionParts = new List<string>();
         var paramValues = new List<object>();
-        var operators = new[] { ">=", "<=", "!=", "=", ">", "<" }; // по убыванию длины
+        var operators = new[] { ">=", "<=", "!=", "=", ">", "<" };
 
         var conditions = condition.Split(',');
 
@@ -319,11 +372,26 @@ public static class CommandHandler
             string columnName = cond.Substring(0, opIndex).Trim();
             string columnValue = cond.Substring(opIndex + foundOperator.Length).Trim();
 
-            if (string.IsNullOrWhiteSpace(columnName) || string.IsNullOrWhiteSpace(columnValue))
-                return ("", [], $"Ошибка разбора условия: '{cond}'");
+            if (TypeFilter == "1")
+            {
+                if (string.IsNullOrWhiteSpace(columnName) || string.IsNullOrWhiteSpace(columnValue))
+                    return ("", [], $"Ошибка разбора условия: '{cond}'");
 
-            conditionParts.Add($"{columnName} {foundOperator} @{paramValues.Count}");
-            paramValues.Add(columnValue);
+                conditionParts.Add($"{columnName} {foundOperator} @{paramValues.Count}");
+                paramValues.Add(columnValue);
+            }
+            else if (TypeFilter == "2")
+            {
+                object typedValue = columnValue;
+                if (DateTime.TryParse(columnValue, out var dt))
+                    typedValue = dt;
+                else if (int.TryParse(columnValue, out var intVal))
+                    typedValue = intVal;
+                else if (bool.TryParse(columnValue, out var boolVal))
+                    typedValue = boolVal;
+
+                paramValues.Add(typedValue);
+            }
         }
 
         string fullCondition = string.Join(" AND ", conditionParts);
@@ -630,5 +698,51 @@ public static class CommandHandler
 
             return $"Создан пользователь - {username} с паролем {password} .";
         }
+    }
+
+    public static string Update(string table, int id, string setClause, object[] values)
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddDbContext<EternalPeaceDbContext>(options =>
+                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
+            .BuildServiceProvider();
+
+        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
+
+        if (table == "Patients")
+        {
+            try
+            {
+                var assignments = setClause.Split(',')
+                                           .Select((part, index) =>
+                                           {
+                                               var parts = part.Split('=');
+                                               var column = parts[0].Trim();
+                                               return $"{column} = @p{index}";
+                                           })
+                                           .ToList();
+
+                var sqlSetClause = string.Join(", ", assignments);
+
+                string sql = $"UPDATE \"Patients\" SET {sqlSetClause} WHERE \"Id\" = @id";
+
+                var paramList = new List<object>();
+                for (int i = 0; i < values.Length; i++)
+                {
+                    paramList.Add(new Npgsql.NpgsqlParameter($"@p{i}", values[i] ?? DBNull.Value));
+                }
+                paramList.Add(new Npgsql.NpgsqlParameter("@id", id));
+
+                int updated = context.Database.ExecuteSqlRaw(sql, paramList.ToArray());
+
+                return updated > 0 ? $"Пациент с ID = {id} обновлён." : $"Пациент с ID = {id} не найден.";
+            }
+            catch (Exception ex)
+            {
+                return "Ошибка обновления: " + ex.Message;
+            }
+        }
+
+        return "Такой таблицы нет.";
     }
 }

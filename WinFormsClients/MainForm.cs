@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace WinFormsClients
 {
@@ -33,6 +34,11 @@ namespace WinFormsClients
             ChooseTable_3.Items.Add("Wards");
             ChooseTable_3.Items.Add("MedHistories");
             ChooseTable_3.SelectedIndex = 0;
+            ChooseTable_4.Items.Add("Doctors");
+            ChooseTable_4.Items.Add("Patients");
+            ChooseTable_4.Items.Add("Wards");
+            ChooseTable_4.Items.Add("MedHistories");
+            ChooseTable_4.SelectedIndex = 0;
         }
 
 
@@ -59,66 +65,61 @@ namespace WinFormsClients
         private void ShowSearchPanel()
         {
             panelSearch.Visible = true;
-
             panelAdd.Visible = false;
-
             panelDelete.Visible = false;
-
             panelCreateUser.Visible = false;
-
             panelSqlQuery.Visible = false;
+            panelUpdate.Visible = false;
         }
 
         private void ShowAddPanel()
         {
             panelSearch.Visible = false;
-
             panelAdd.Visible = true;
-
             panelDelete.Visible = false;
-
             panelCreateUser.Visible = false;
-
             panelSqlQuery.Visible = false;
+            panelUpdate.Visible = false;
         }
 
         private void ShowDeletePanel()
         {
             panelSearch.Visible = false;
-
             panelAdd.Visible = false;
-
             panelDelete.Visible = true;
-
             panelCreateUser.Visible = false;
-
             panelSqlQuery.Visible = false;
+            panelUpdate.Visible = false;
+        }
+
+        private void ShowUpdatePanel()
+        {
+            panelSearch.Visible = false;
+            panelAdd.Visible = false;
+            panelDelete.Visible = false;
+            panelCreateUser.Visible = false;
+            panelSqlQuery.Visible = false;
+            panelUpdate.Visible = true;
         }
 
         private void ShowSqlQueryPanel()
         {
             panelSearch.Visible = false;
-
             panelAdd.Visible = false;
-
             panelDelete.Visible = false;
-
             panelCreateUser.Visible = false;
-
             panelSqlQuery.Visible = true;
+            panelUpdate.Visible = false;
         }
 
         private void ShowCreateUserPanel()
         {
             panelSearch.Visible = false;
-
             panelAdd.Visible = false;
-
             panelDelete.Visible = false;
-
             panelCreateUser.Visible = true;
-
             panelSqlQuery.Visible = false;
+            panelUpdate.Visible = false;
         }
 
         private void добавлениеТаблицыToolStripMenuItem_Click(object sender, EventArgs e)
@@ -129,6 +130,11 @@ namespace WinFormsClients
         private void поискТаблицыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowSearchPanel();
+        }
+
+        private void обновлениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowUpdatePanel();
         }
 
         private void удалениеToolStripMenuItem_Click(object sender, EventArgs e)
@@ -409,6 +415,31 @@ namespace WinFormsClients
             catch (Exception)
             {
                 MessageBox.Show("Ошибка, выберите существующую таблицу");
+            }
+        }
+
+        private void buttonUpdate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string table = ChooseTable_4.Text.Trim();
+                string idText = txtEnterIdForTable.Text.Trim();
+                string condition = txtConditionForTable.Text.Trim();
+
+                if (!int.TryParse(idText, out int id))
+                {
+                    MessageBox.Show("Неверный формат ID.");
+                    return;
+                }
+
+                string command = $"UPDATE {table} {id} {condition}";
+                string response = SendCommand(command);
+
+                MessageBox.Show(response);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка: " + ex.Message);
             }
         }
     }

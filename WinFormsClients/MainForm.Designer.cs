@@ -52,7 +52,6 @@
             label13 = new Label();
             label15 = new Label();
             label16 = new Label();
-            label17 = new Label();
             txtWardType = new TextBox();
             txtWardNumBeds = new TextBox();
             txtWardId = new TextBox();
@@ -98,6 +97,7 @@
             label2 = new Label();
             label1 = new Label();
             label9 = new Label();
+            label17 = new Label();
             panelSearch = new Panel();
             OperationLabel = new Label();
             checkBox1 = new CheckBox();
@@ -131,6 +131,15 @@
             txtUserEnter = new TextBox();
             label35 = new Label();
             label34 = new Label();
+            panelUpdate = new Panel();
+            label45 = new Label();
+            txtEnterIdForTable = new TextBox();
+            ChooseTable_4 = new ComboBox();
+            label44 = new Label();
+            label42 = new Label();
+            label43 = new Label();
+            buttonUpdate = new Button();
+            txtConditionForTable = new TextBox();
             menuStrip1.SuspendLayout();
             panelAdd.SuspendLayout();
             panelSearch.SuspendLayout();
@@ -138,6 +147,7 @@
             panelSqlQuery.SuspendLayout();
             panelDelete.SuspendLayout();
             panelCreateUser.SuspendLayout();
+            panelUpdate.SuspendLayout();
             SuspendLayout();
             // 
             // contextMenuStrip1
@@ -178,8 +188,9 @@
             // обновлениеToolStripMenuItem
             // 
             обновлениеToolStripMenuItem.Name = "обновлениеToolStripMenuItem";
-            обновлениеToolStripMenuItem.Size = new Size(88, 20);
-            обновлениеToolStripMenuItem.Text = "Обновление";
+            обновлениеToolStripMenuItem.Size = new Size(81, 20);
+            обновлениеToolStripMenuItem.Text = "Изменение";
+            обновлениеToolStripMenuItem.Click += обновлениеToolStripMenuItem_Click;
             // 
             // sQLЗапросToolStripMenuItem
             // 
@@ -220,7 +231,6 @@
             panelAdd.Controls.Add(label13);
             panelAdd.Controls.Add(label15);
             panelAdd.Controls.Add(label16);
-            panelAdd.Controls.Add(label17);
             panelAdd.Controls.Add(txtWardType);
             panelAdd.Controls.Add(txtWardNumBeds);
             panelAdd.Controls.Add(txtWardId);
@@ -266,6 +276,7 @@
             panelAdd.Controls.Add(label2);
             panelAdd.Controls.Add(label1);
             panelAdd.Controls.Add(label9);
+            panelAdd.Controls.Add(label17);
             panelAdd.Dock = DockStyle.Fill;
             panelAdd.Location = new Point(0, 0);
             panelAdd.Name = "panelAdd";
@@ -390,16 +401,6 @@
             label16.TabIndex = 135;
             label16.Text = "ID";
             label16.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // label17
-            // 
-            label17.AutoSize = true;
-            label17.Location = new Point(20, 352);
-            label17.Name = "label17";
-            label17.Size = new Size(151, 15);
-            label17.TabIndex = 134;
-            label17.Text = "Добавление нового врача";
-            label17.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // txtWardType
             // 
@@ -813,6 +814,16 @@
             label9.TabIndex = 8;
             label9.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // label17
+            // 
+            label17.AutoSize = true;
+            label17.Location = new Point(20, 352);
+            label17.Name = "label17";
+            label17.Size = new Size(151, 15);
+            label17.TabIndex = 134;
+            label17.Text = "Добавление нового врача";
+            label17.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // panelSearch
             // 
             panelSearch.Controls.Add(OperationLabel);
@@ -1142,12 +1153,99 @@
             label34.TabIndex = 0;
             label34.Text = "Создание нового пользователя";
             // 
+            // panelUpdate
+            // 
+            panelUpdate.Controls.Add(label45);
+            panelUpdate.Controls.Add(txtEnterIdForTable);
+            panelUpdate.Controls.Add(ChooseTable_4);
+            panelUpdate.Controls.Add(label44);
+            panelUpdate.Controls.Add(label42);
+            panelUpdate.Controls.Add(label43);
+            panelUpdate.Controls.Add(buttonUpdate);
+            panelUpdate.Controls.Add(txtConditionForTable);
+            panelUpdate.Dock = DockStyle.Fill;
+            panelUpdate.Location = new Point(0, 0);
+            panelUpdate.Name = "panelUpdate";
+            panelUpdate.Size = new Size(884, 561);
+            panelUpdate.TabIndex = 27;
+            panelUpdate.Visible = false;
+            // 
+            // label45
+            // 
+            label45.AutoSize = true;
+            label45.Location = new Point(41, 100);
+            label45.Name = "label45";
+            label45.Size = new Size(64, 15);
+            label45.TabIndex = 34;
+            label45.Text = "Введите ID";
+            // 
+            // txtEnterIdForTable
+            // 
+            txtEnterIdForTable.Location = new Point(568, 95);
+            txtEnterIdForTable.Name = "txtEnterIdForTable";
+            txtEnterIdForTable.Size = new Size(100, 23);
+            txtEnterIdForTable.TabIndex = 35;
+            // 
+            // ChooseTable_4
+            // 
+            ChooseTable_4.FormattingEnabled = true;
+            ChooseTable_4.Location = new Point(568, 66);
+            ChooseTable_4.Name = "ChooseTable_4";
+            ChooseTable_4.Size = new Size(100, 23);
+            ChooseTable_4.TabIndex = 33;
+            // 
+            // label44
+            // 
+            label44.AutoSize = true;
+            label44.Location = new Point(41, 71);
+            label44.Name = "label44";
+            label44.Size = new Size(110, 15);
+            label44.TabIndex = 32;
+            label44.Text = "Название таблицы";
+            // 
+            // label42
+            // 
+            label42.AutoSize = true;
+            label42.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            label42.Location = new Point(255, 29);
+            label42.Name = "label42";
+            label42.Size = new Size(161, 21);
+            label42.TabIndex = 28;
+            label42.Text = "Изменение записей";
+            // 
+            // label43
+            // 
+            label43.AutoSize = true;
+            label43.Location = new Point(41, 131);
+            label43.Name = "label43";
+            label43.Size = new Size(375, 15);
+            label43.TabIndex = 29;
+            label43.Text = "Введите изменения (\"Name\" = Павел, \"Address\"= 11 улица Ленина)";
+            // 
+            // buttonUpdate
+            // 
+            buttonUpdate.Location = new Point(302, 162);
+            buttonUpdate.Name = "buttonUpdate";
+            buttonUpdate.Size = new Size(75, 23);
+            buttonUpdate.TabIndex = 30;
+            buttonUpdate.Text = "Изменить";
+            buttonUpdate.UseVisualStyleBackColor = true;
+            buttonUpdate.Click += buttonUpdate_Click;
+            // 
+            // txtConditionForTable
+            // 
+            txtConditionForTable.Location = new Point(462, 124);
+            txtConditionForTable.Name = "txtConditionForTable";
+            txtConditionForTable.Size = new Size(206, 23);
+            txtConditionForTable.TabIndex = 31;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 561);
             Controls.Add(menuStrip1);
+            Controls.Add(panelUpdate);
             Controls.Add(panelSqlQuery);
             Controls.Add(panelSearch);
             Controls.Add(panelCreateUser);
@@ -1173,6 +1271,8 @@
             panelDelete.PerformLayout();
             panelCreateUser.ResumeLayout(false);
             panelCreateUser.PerformLayout();
+            panelUpdate.ResumeLayout(false);
+            panelUpdate.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1256,7 +1356,7 @@
         private Label label21;
         private Label label22;
         private Label label23;
-        private Panel panel1;
+        private Panel panelUpdate;
         private Label label33;
         private Label label32;
         private Label label31;
@@ -1281,5 +1381,13 @@
         private ComboBox ChooseTable_3;
         private Label label40;
         private Label label41;
+        private Label label42;
+        private Label label43;
+        private Button buttonUpdate;
+        private ComboBox ChooseTable_4;
+        private Label label44;
+        private TextBox txtConditionForTable;
+        private Label label45;
+        private TextBox txtEnterIdForTable;
     }
 }

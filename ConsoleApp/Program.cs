@@ -55,8 +55,6 @@ class Program
         }
     }
 
-    
-
     static string Update(string table)
     {
         var serviceProvider = new ServiceCollection()
@@ -275,106 +273,6 @@ class Program
             }
         }
 
-        return "Такой таблицы нет(";
-    }
-
-    static string Sql_Query(string table, string sql_query)
-    {
-        var serviceProvider = new ServiceCollection()
-            .AddDbContext<EternalPeaceDbContext>(options =>
-                options.UseNpgsql("Host=localhost;Port=5432;Database=eternalpeace;Username=postgres;Password=1"))
-            .BuildServiceProvider();
-
-        using var context = serviceProvider.GetRequiredService<EternalPeaceDbContext>();
-
-        var entityTypes = context.Model.GetEntityTypes();
-
-        foreach (var entityType in entityTypes)
-        {
-            if (entityType.GetTableName() == table)
-            {
-                if (table == "Patients")
-                {
-                    try
-                    {
-                        var result = context.Patients
-                            .FromSqlRaw(sql_query)
-                            .ToList();
-
-                        foreach (var patient in result)
-                        {
-                            Console.WriteLine($"ID: {patient.Id}, Name: {patient.Name}, Address: {patient.Address}, Sex: {patient.Sex}, BirthDate: {patient.BirthDate}, InsuranceType: {patient.InsuranceType}, InsuranceExpDate: {patient.InsuranceExpDate}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
-                        Console.WriteLine(ex.Message);
-                    }
-                    return "";
-                }
-                if (table == "Doctors")
-                {
-                    try
-                    {
-                        var result = context.Doctors
-                            .FromSqlRaw(sql_query)
-                            .ToList();
-
-                        foreach (var doctor in result)
-                        {
-                            Console.WriteLine($"ID: {doctor.Id}, Name: {doctor.Name}, Sex: {doctor.Sex}, BirthDate: {doctor.BirthDate}, Speciallity: {doctor.Speciallity}, WorkExperience: {doctor.WorkExperience}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
-                        Console.WriteLine(ex.Message);
-                    }
-                    return "";
-                }
-                if (table == "Wards")
-                {
-                    try
-                    {
-                        var result = context.Wards
-                            .FromSqlRaw(sql_query)
-                            .ToList();
-
-                        foreach (var ward in result)
-                        {
-                            Console.WriteLine($"ID: {ward.Id}, NumBeds: {ward.NumBeds}, WardType: {ward.WardType}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
-                        Console.WriteLine(ex.Message);
-                    }
-                    return "";
-                }
-                if (table == "MedHistories")
-                {
-                    try
-                    {
-                        var result = context.MedHistories
-                            .FromSqlRaw(sql_query)
-                            .ToList();
-
-                        foreach (var medhistory in result)
-                        {
-                            Console.WriteLine($"ID: {medhistory.Id}, PatientID: {medhistory.PatientId}, Diseases: {medhistory.Diseases}, Status: {medhistory.Status}, DoctorId: {medhistory.DoctorId}, WardId: {medhistory.WardId}, TreatmentCost: {medhistory.TreatmentCost}, RecordDate: {medhistory.RecordDate}, DischargeDate: {medhistory.DischargeDate}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Ошибка выполнения SQL-запроса:");
-                        Console.WriteLine(ex.Message);
-                    }
-                    return "";
-                }
-            }
-        }
         return "Такой таблицы нет(";
     }
 }
