@@ -39,6 +39,7 @@
             созданиеНовогоПользователяToolStripMenuItem = new ToolStripMenuItem();
             выходToolStripMenuItem = new ToolStripMenuItem();
             panelAdd = new Panel();
+            label46 = new Label();
             txtDoctorWorkExperience = new TextBox();
             txtDoctorSpeciallity = new TextBox();
             txtDoctorBirthday = new TextBox();
@@ -218,6 +219,7 @@
             // panelAdd
             // 
             panelAdd.BackColor = SystemColors.Control;
+            panelAdd.Controls.Add(label46);
             panelAdd.Controls.Add(txtDoctorWorkExperience);
             panelAdd.Controls.Add(txtDoctorSpeciallity);
             panelAdd.Controls.Add(txtDoctorBirthday);
@@ -283,6 +285,16 @@
             panelAdd.Size = new Size(884, 561);
             panelAdd.TabIndex = 18;
             panelAdd.Visible = false;
+            // 
+            // label46
+            // 
+            label46.AutoSize = true;
+            label46.Location = new Point(18, 39);
+            label46.Name = "label46";
+            label46.Size = new Size(170, 15);
+            label46.TabIndex = 148;
+            label46.Text = "Добавление нового пациента";
+            label46.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // txtDoctorWorkExperience
             // 
@@ -940,9 +952,9 @@
             label41.Font = new Font("Segoe UI", 6.75F, FontStyle.Regular, GraphicsUnit.Point, 204);
             label41.Location = new Point(21, 190);
             label41.Name = "label41";
-            label41.Size = new Size(321, 12);
+            label41.Size = new Size(226, 12);
             label41.TabIndex = 21;
-            label41.Text = "SELECT * FROM \"Patients\" WHERE \"Address\" LIKE '%24 Новозаводская улица%'";
+            label41.Text = "SELECT * FROM \"Doctors\" WHERE \"Sex\" LIKE 'Женщина'";
             // 
             // label40
             // 
@@ -974,7 +986,6 @@
             // 
             // txtSqlOutput
             // 
-            txtSqlOutput.Enabled = false;
             txtSqlOutput.Location = new Point(368, 47);
             txtSqlOutput.Name = "txtSqlOutput";
             txtSqlOutput.Size = new Size(504, 502);
@@ -1061,10 +1072,11 @@
             // label32
             // 
             label32.AutoSize = true;
+            label32.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
             label32.ImageAlign = ContentAlignment.MiddleLeft;
             label32.Location = new Point(53, 35);
             label32.Name = "label32";
-            label32.Size = new Size(90, 15);
+            label32.Size = new Size(123, 21);
             label32.TabIndex = 23;
             label32.Text = "Удаление по ID";
             // 
@@ -1245,12 +1257,12 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 561);
             Controls.Add(menuStrip1);
-            Controls.Add(panelUpdate);
             Controls.Add(panelSqlQuery);
             Controls.Add(panelSearch);
             Controls.Add(panelCreateUser);
             Controls.Add(panelDelete);
             Controls.Add(panelAdd);
+            Controls.Add(panelUpdate);
             MainMenuStrip = menuStrip1;
             MaximumSize = new Size(900, 600);
             MinimumSize = new Size(900, 600);
@@ -1389,5 +1401,6 @@
         private TextBox txtConditionForTable;
         private Label label45;
         private TextBox txtEnterIdForTable;
+        private Label label46;
     }
 }

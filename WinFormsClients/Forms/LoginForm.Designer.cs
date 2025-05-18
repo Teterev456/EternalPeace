@@ -1,4 +1,4 @@
-﻿namespace WinFormsClients
+namespace WinFormsClients
 {
     partial class LoginForm
     {
@@ -33,7 +33,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(58, 50);
+            label1.Location = new Point(61, 54);
             label1.Name = "label1";
             label1.Size = new Size(37, 15);
             label1.TabIndex = 0;
@@ -42,7 +42,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(58, 94);
+            label2.Location = new Point(61, 98);
             label2.Name = "label2";
             label2.Size = new Size(57, 15);
             label2.TabIndex = 1;
@@ -50,14 +50,14 @@
             // 
             // Login
             // 
-            Login.Location = new Point(58, 68);
+            Login.Location = new Point(61, 72);
             Login.Name = "Login";
             Login.Size = new Size(116, 23);
             Login.TabIndex = 2;
             // 
             // Password
             // 
-            Password.Location = new Point(58, 112);
+            Password.Location = new Point(61, 116);
             Password.Name = "Password";
             Password.Size = new Size(116, 23);
             Password.TabIndex = 3;
@@ -66,7 +66,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 204);
-            label3.Location = new Point(83, 11);
+            label3.Location = new Point(86, 15);
             label3.Name = "label3";
             label3.Size = new Size(64, 30);
             label3.TabIndex = 4;
@@ -74,7 +74,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(83, 144);
+            button1.Location = new Point(86, 148);
             button1.Name = "button1";
             button1.Size = new Size(64, 23);
             button1.TabIndex = 5;
@@ -84,10 +84,9 @@
             // 
             // AnswerLabel
             // 
-            AnswerLabel.AutoSize = true;
-            AnswerLabel.Location = new Point(46, 186);
+            AnswerLabel.Location = new Point(12, 185);
             AnswerLabel.Name = "AnswerLabel";
-            AnswerLabel.Size = new Size(139, 15);
+            AnswerLabel.Size = new Size(220, 15);
             AnswerLabel.TabIndex = 6;
             AnswerLabel.Text = "Введите логин и пароль";
             AnswerLabel.TextAlign = ContentAlignment.MiddleCenter;

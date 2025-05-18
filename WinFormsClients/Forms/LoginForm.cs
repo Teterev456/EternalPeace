@@ -10,35 +10,37 @@ namespace WinFormsClients
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             string username = Login.Text.Trim();
             string password = Password.Text.Trim();
 
             if (username == "" || password == "")
             {
-                AnswerLabel.Text = "Введите логин и пароль.";
+                AnswerLabel.Text = "Р’РІРµРґРёС‚Рµ Р»РѕРіРёРЅ Рё РїР°СЂРѕР»СЊ.";
+                AnswerLabel.ForeColor = Color.Red;
                 return;
             }
+                string response = SendLoginRequest(username, password);
 
-            string response = SendLoginRequest(username, password);
-
-            if (response == "OK")
+            if (response.StartsWith("OK"))
             {
-                AnswerLabel.Text = "Успешный вход.";
+                AnswerLabel.Text = "РЈСЃРїРµС€РЅС‹Р№ РІС…РѕРґ.";
                 AnswerLabel.ForeColor = Color.Green;
-                Hide();
-                var mainForm = new MainForm();
-                mainForm.Show();
+
+                await Task.Delay(1000);
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
-            else if (response == "FAIL")
+            else if (response.StartsWith("FAIL"))
             {
-                AnswerLabel.Text = "Неверный логин или пароль.";
+                AnswerLabel.Text = "РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ.";
                 AnswerLabel.ForeColor = Color.Red;
             }
-            else
+            else if (response == "ERROR")
             {
-                AnswerLabel.Text = "Ошибка подключения.";
+                AnswerLabel.Text = "РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ.";
                 AnswerLabel.ForeColor = Color.DarkOrange;
             }
         }
@@ -54,9 +56,13 @@ namespace WinFormsClients
                 byte[] data = Encoding.UTF8.GetBytes(message);
                 stream.Write(data, 0, data.Length);
 
-                byte[] buffer = new byte[1024];
+                var buffer = new byte[4096];
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
-                return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                if (bytesRead == 0)
+                    return "ERROR";
+
+                string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                return response.Trim();
             }
             catch
             {
@@ -65,4 +71,3 @@ namespace WinFormsClients
         }
     }
 }
-

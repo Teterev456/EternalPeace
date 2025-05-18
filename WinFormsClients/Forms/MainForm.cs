@@ -52,13 +52,16 @@ namespace WinFormsClients
                 byte[] data = Encoding.UTF8.GetBytes(command);
                 stream.Write(data, 0, data.Length);
 
-                byte[] buffer = new byte[4096];
+                var buffer = new byte[8192];
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
-                return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                if (bytesRead == 0) return "ERROR: no response";
+
+                string response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                return response.Trim();
             }
-            catch
+            catch (Exception ex)
             {
-                return "ERROR";
+                return $"ERROR: {ex.Message}";
             }
         }
 
@@ -179,16 +182,14 @@ namespace WinFormsClients
             try
             {
                 string tableName = ChooseTable.SelectedItem.ToString();
-
                 string type = checkBox1.Checked ? "2" : "1";
-
                 string condition = checkTextBox.Text.Trim();
 
                 string command = type == "2"
                     ? $"SEARCH {tableName} {type} {condition}"
                     : $"SEARCH {tableName} {type}";
 
-                string response = SendCommand($"SEARCH {tableName}||{type}||{condition}");
+                string response = SendCommand(command);
 
                 var dt = new DataTable();
 
@@ -289,10 +290,12 @@ namespace WinFormsClients
             string sex = txtPatientSex.Text.Trim();
             string birthDate = txtPatientBirthDate.Text.Trim();
             string insuranceType = txtPatientInsuranceType.Text.Trim();
-            string insuranceExp = "";
-            if (insuranceType != "Полис ОМС" && insuranceType != "-")
+            string insuranceExp = txtPatientInsuranceExp.Text.Trim();
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(name))
             {
-                insuranceExp = txtPatientInsuranceExp.Text.Trim();
+                MessageBox.Show("ID и Name обязательны.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
             string data = $"{id}|{name}|{address}|{sex}|{birthDate}|{insuranceType}|{insuranceExp}";
@@ -300,7 +303,14 @@ namespace WinFormsClients
             string command = $"ADD Patients {data}";
 
             string response = SendCommand(command);
-            MessageBox.Show(response == "OK" ? $"Запись добавлена успешно - {data}" : $"Ошибка добавления: {response}");
+
+            if (response == "OK")
+            {
+                MessageBox.Show($"Пациент добавлен: {data}", "ОК", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            MessageBox.Show($"Ошибка добавления: {response}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void AddDoctorButton_Click(object sender, EventArgs e)
@@ -354,18 +364,25 @@ namespace WinFormsClients
             MessageBox.Show(response == "OK" ? $"Запись добавлена успешно - {data}" : $"Ошибка добавления: {response}");
         }
 
-        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Hide();
-
-            var loginForm = new LoginForm();
-            loginForm.Show();
-
-            loginForm.FormClosed += (s, args) => this.Close();
-
-            string command = "Успешный выход.";
+            string command = "EXIT";
             string response = SendCommand(command);
+
+            if (response.Trim() == "EXIT")
+            {
+                await Task.Delay(1000);
+
+                IsLogoutRequested = true;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Ошибка при выходе: " + response);
+            }
         }
+
+        public bool IsLogoutRequested { get; private set; } = false;
 
         private void button2_Click(object sender, EventArgs e)
         {
