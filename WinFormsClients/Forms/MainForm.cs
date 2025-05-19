@@ -273,8 +273,12 @@ namespace WinFormsClients
                             dt.Rows.Add(values);
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Ошибка, Такой таблицы не существует(");
+                }
 
-                dataGridView1.DataSource = dt;
+                    dataGridView1.DataSource = dt;
             }
             catch (Exception)
             {

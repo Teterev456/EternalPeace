@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EternalPeace", "consoleapp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsClients", "winformsclients\WinFormsClients.csproj", "{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EternalPeace.Tests", "EternalPeace.Tests\EternalPeace.Tests.csproj", "{0A1CD0E0-34D3-CC77-EC66-723C604BE3D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2355B822-C7C2-4E85-AB9C-FC05DD0C8658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A1CD0E0-34D3-CC77-EC66-723C604BE3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A1CD0E0-34D3-CC77-EC66-723C604BE3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A1CD0E0-34D3-CC77-EC66-723C604BE3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A1CD0E0-34D3-CC77-EC66-723C604BE3D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
